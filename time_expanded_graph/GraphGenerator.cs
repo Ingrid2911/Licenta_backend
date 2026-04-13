@@ -43,7 +43,7 @@ namespace time_expanded_graph
             // 🔹 s → primul nivel
             for (int i = 1; i <= nodesPerLevel; i++)
             {
-                edges.Add(new SimpleEdge("s", $"L1_{i}", 1, rnd.Next(3, 7)));
+                edges.Add(new SimpleEdge("s", $"L1_{i}", 1, rnd.Next(20, 40)));
             }
 
             // 🔹 conexiuni între niveluri
@@ -60,7 +60,7 @@ namespace time_expanded_graph
                                 $"L{l}_{i}",
                                 $"L{l + 1}_{j}",
                                 1,
-                                rnd.Next(1, 5)
+                                rnd.Next(15, 35)
                             ));
                         }
                     }
@@ -70,7 +70,7 @@ namespace time_expanded_graph
             // 🔹 ultim nivel → t
             for (int i = 1; i <= nodesPerLevel; i++)
             {
-                edges.Add(new SimpleEdge($"L{levels}_{i}", "t", 1, rnd.Next(3, 8)));
+                edges.Add(new SimpleEdge($"L{levels}_{i}", "t", 1, rnd.Next(20, 40)));
             }
 
             return new SimpleGraph(nodes, edges, "s", "t");

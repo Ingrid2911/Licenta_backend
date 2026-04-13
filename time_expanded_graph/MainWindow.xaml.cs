@@ -25,7 +25,7 @@ namespace time_expanded_graph
         public MainWindow()
         {
             
-            var graph = GraphGenerator.GenerateGraph(300);
+            var graph = GraphGenerator.GenerateGraph(6);
 
             //var renderer = new SimpleGraphDrawing();
             //renderer.Draw(graph, OriginalGraphCanvas);
@@ -37,11 +37,11 @@ namespace time_expanded_graph
                 Debug.WriteLine(node);
             }
 
-            //Debug.WriteLine("=== MUCHII ===");
-            //foreach (var edge in graph.Edges)
-            //{
-            //    Debug.WriteLine($"{edge.From} -> {edge.To} | time={edge.TravelTime} | cap={edge.Capacity}");
-            //}
+            Debug.WriteLine("=== MUCHII ===");
+            foreach (var edge in graph.Edges)
+            {
+                Debug.WriteLine($"{edge.From} -> {edge.To} | time={edge.TravelTime} | cap={edge.Capacity}");
+            }
             Debug.WriteLine($"Număr total muchii: {graph.Edges.Count}");
 
             //var builder = new TimeExpandedGraphBuilder();
@@ -71,8 +71,8 @@ namespace time_expanded_graph
 
             //Debug.WriteLine($"DINIC FLOW = {flowDinic}, TIME = {sw.Elapsed.TotalMilliseconds} ms");
 
-            int peopleNeeded = 1;
-            int maxTime = 50;
+            int peopleNeeded = 12;
+            int maxTime = 10;
 
             var sw = Stopwatch.StartNew();
 
