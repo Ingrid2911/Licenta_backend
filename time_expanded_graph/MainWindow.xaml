@@ -1,0 +1,23 @@
+﻿<Window x:Class="time_expanded_graph.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:time_expanded_graph"
+        mc:Ignorable="d"
+        Title="Time-expanded Grpah" Height="450" Width="800">
+    <TabControl>
+        <TabItem Header="Graf original">
+            <Canvas x:Name="OriginalGraphCanvas"
+                Background="White"/>
+        </TabItem>
+
+        <TabItem Header="Graf time-expanded">
+            <Canvas x:Name="ExpandedGraphCanvas"
+                Background="White"/>
+        </TabItem>
+    </TabControl>
+
+
+
+</Window>
