@@ -26,6 +26,11 @@
             <Canvas x:Name="PushRelabelGraphCanvas"
                 Background="White"/>
         </TabItem>
+
+        <TabItem Header="Edmonds-Karp">
+            <Canvas x:Name="EdmondsKarpGraphCanvas"
+        Background="White"/>
+        </TabItem>
     </TabControl>
 
 

@@ -135,5 +135,25 @@ namespace time_expanded_graph.Edmonds_Karp
 
             return flow;
         }
+        public List<(int from, FlowEdge edge)> GetAllEdges()
+        {
+            var result = new List<(int, FlowEdge)>();
+
+            for (int i = 0; i < graph.Count; i++)
+            {
+                foreach (var e in graph[i])
+                {
+                    if (e.Capacity > 0)
+                        result.Add((i, e));
+                }
+            }
+
+            return result;
+        }
+
+        public Dictionary<int, string> GetIndexToNodeMap()
+        {
+            return nodeIndex.ToDictionary(x => x.Value, x => x.Key);
+        }
     }
 }
