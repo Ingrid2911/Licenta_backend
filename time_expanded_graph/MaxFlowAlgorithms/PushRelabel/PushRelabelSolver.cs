@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using time_expanded_graph.ExpandedTimeGraph;
+using time_expanded_graph.MaxFlowAlgorithms;
 
 namespace time_expanded_graph.MaxFlowAlgorithms.PushRelabel
 {
@@ -26,18 +28,13 @@ namespace time_expanded_graph.MaxFlowAlgorithms.PushRelabel
 
         public int ComputeMaxFlow(string sourceNode, string sinkNode)
         {
-            if (!nodeIndex.ContainsKey(sourceNode))
-                throw new ArgumentException($"Nodul sursă '{sourceNode}' nu există.");
-
-            if (!nodeIndex.ContainsKey(sinkNode))
-                throw new ArgumentException($"Nodul destinație '{sinkNode}' nu există.");
-
             source = nodeIndex[sourceNode];
             sink = nodeIndex[sinkNode];
 
             return PushRelabel();
         }
 
+        // 🔹 Build graph
         private void BuildGraph(ExpandedGraph eg)
         {
             nodeIndex = new Dictionary<string, int>();
@@ -45,44 +42,41 @@ namespace time_expanded_graph.MaxFlowAlgorithms.PushRelabel
 
             var allNodes = new HashSet<string>();
 
-            foreach (var edge in eg.ExpandedEdges)
+            foreach (var e in eg.ExpandedEdges)
             {
-                allNodes.Add(edge.From);
-                allNodes.Add(edge.To);
+                allNodes.Add(e.From);
+                allNodes.Add(e.To);
             }
 
             allNodes.Add(eg.SuperSource);
             allNodes.Add(eg.SuperSink);
 
-            int index = 0;
+            int idx = 0;
             foreach (var node in allNodes)
             {
-                nodeIndex[node] = index++;
+                nodeIndex[node] = idx++;
                 graph.Add(new List<FlowEdge>());
             }
 
-            foreach (var edge in eg.ExpandedEdges)
+            foreach (var e in eg.ExpandedEdges)
             {
-                AddEdge(
-                    nodeIndex[edge.From],
-                    nodeIndex[edge.To],
-                    edge.Capacity
-                );
+                AddEdge(nodeIndex[e.From], nodeIndex[e.To], e.Capacity);
             }
         }
 
         private void AddEdge(int from, int to, int capacity)
         {
-            var forward = new FlowEdge(to, capacity);
-            var backward = new FlowEdge(from, 0);
+            var f = new FlowEdge(to, capacity);
+            var r = new FlowEdge(from, 0);
 
-            forward.Reverse = backward;
-            backward.Reverse = forward;
+            f.Reverse = r;
+            r.Reverse = f;
 
-            graph[from].Add(forward);
-            graph[to].Add(backward);
+            graph[from].Add(f);
+            graph[to].Add(r);
         }
 
+        // 🔹 MAIN
         private int PushRelabel()
         {
             int n = graph.Count;
@@ -90,7 +84,6 @@ namespace time_expanded_graph.MaxFlowAlgorithms.PushRelabel
             height = new int[n];
             excess = new int[n];
             current = new int[n];
-
             active = new bool[n];
             activeNodes = new Queue<int>();
 
@@ -98,24 +91,19 @@ namespace time_expanded_graph.MaxFlowAlgorithms.PushRelabel
 
             height[source] = n;
 
-            foreach (var edge in graph[source])
+            // 🔥 preflow
+            foreach (var e in graph[source])
             {
-                if (edge.Capacity > 0)
-                {
-                    int flow = edge.Capacity;
+                int flow = e.Capacity;
 
-                    edge.Flow += flow;
-                    edge.Reverse.Flow -= flow;
+                e.Flow += flow;
+                e.Reverse.Flow -= flow;
 
-                    excess[source] -= flow;
-                    excess[edge.To] += flow;
+                excess[source] -= flow;
+                excess[e.To] += flow;
 
-                    Enqueue(edge.To);
-                }
+                Enqueue(e.To);
             }
-
-            int operations = 0;
-            int globalRelabelFrequency = Math.Max(1, n);
 
             while (activeNodes.Count > 0)
             {
@@ -127,14 +115,6 @@ namespace time_expanded_graph.MaxFlowAlgorithms.PushRelabel
 
                 Discharge(u);
 
-                operations++;
-
-                if (operations % globalRelabelFrequency == 0)
-                {
-                    GlobalRelabel();
-                    Array.Fill(current, 0);
-                }
-
                 if (excess[u] > 0)
                     Enqueue(u);
             }
@@ -142,13 +122,11 @@ namespace time_expanded_graph.MaxFlowAlgorithms.PushRelabel
             return excess[sink];
         }
 
+        // 🔹 discharge
         private void Discharge(int u)
         {
             while (excess[u] > 0)
             {
-                if (height[u] == int.MaxValue)
-                    break;
-
                 if (current[u] == graph[u].Count)
                 {
                     Relabel(u);
@@ -156,12 +134,12 @@ namespace time_expanded_graph.MaxFlowAlgorithms.PushRelabel
                 }
                 else
                 {
-                    FlowEdge edge = graph[u][current[u]];
+                    var e = graph[u][current[u]];
 
-                    if (edge.ResidualCapacity() > 0 &&
-                        height[u] == height[edge.To] + 1)
+                    if (e.ResidualCapacity() > 0 &&
+                        height[u] == height[e.To] + 1)
                     {
-                        Push(u, edge);
+                        Push(u, e);
                     }
                     else
                     {
@@ -171,83 +149,93 @@ namespace time_expanded_graph.MaxFlowAlgorithms.PushRelabel
             }
         }
 
-        private void Push(int u, FlowEdge edge)
+        // 🔹 push
+        private void Push(int u, FlowEdge e)
         {
-            int v = edge.To;
+            int send = Math.Min(excess[u], e.ResidualCapacity());
 
-            int send = Math.Min(excess[u], edge.ResidualCapacity());
+            if (send <= 0) return;
 
-            if (send <= 0)
-                return;
-
-            edge.Flow += send;
-            edge.Reverse.Flow -= send;
+            e.Flow += send;
+            e.Reverse.Flow -= send;
 
             excess[u] -= send;
-            excess[v] += send;
+            excess[e.To] += send;
 
-            Enqueue(v);
+            Enqueue(e.To);
         }
 
+        // 🔹 relabel
         private void Relabel(int u)
         {
-            int minHeight = int.MaxValue;
+            int min = int.MaxValue;
 
-            foreach (var edge in graph[u])
+            foreach (var e in graph[u])
             {
-                if (edge.ResidualCapacity() > 0)
-                {
-                    minHeight = Math.Min(minHeight, height[edge.To]);
-                }
+                if (e.ResidualCapacity() > 0)
+                    min = Math.Min(min, height[e.To]);
             }
 
-            if (minHeight == int.MaxValue)
-            {
-                height[u] = int.MaxValue;
-            }
-            else
-            {
-                height[u] = minHeight + 1;
-            }
+            if (min < int.MaxValue)
+                height[u] = min + 1;
         }
 
+        // 🔹 global relabel
         private void GlobalRelabel()
         {
             Array.Fill(height, int.MaxValue);
 
             height[sink] = 0;
 
-            var queue = new Queue<int>();
-            queue.Enqueue(sink);
+            Queue<int> q = new();
+            q.Enqueue(sink);
 
-            while (queue.Count > 0)
+            while (q.Count > 0)
             {
-                int u = queue.Dequeue();
+                int u = q.Dequeue();
 
-                foreach (var edge in graph[u])
+                foreach (var e in graph[u])
                 {
-                    FlowEdge reverse = edge.Reverse;
-
-                    if (reverse.ResidualCapacity() > 0 &&
-                        height[edge.To] == int.MaxValue)
+                    if (e.Reverse.ResidualCapacity() > 0 &&
+                        height[e.To] == int.MaxValue)
                     {
-                        height[edge.To] = height[u] + 1;
-                        queue.Enqueue(edge.To);
+                        height[e.To] = height[u] + 1;
+                        q.Enqueue(e.To);
                     }
                 }
             }
         }
 
-        private void Enqueue(int node)
+        private void Enqueue(int v)
         {
-            if (node != source &&
-                node != sink &&
-                !active[node] &&
-                excess[node] > 0)
+            if (!active[v] && excess[v] > 0 && v != source && v != sink)
             {
-                active[node] = true;
-                activeNodes.Enqueue(node);
+                active[v] = true;
+                activeNodes.Enqueue(v);
             }
+        }
+
+        // 🔥 🔥 🔥 IMPORTANT – pentru vizualizare 🔥 🔥 🔥
+
+        public List<(int from, FlowEdge edge)> GetAllEdges()
+        {
+            var result = new List<(int, FlowEdge)>();
+
+            for (int i = 0; i < graph.Count; i++)
+            {
+                foreach (var e in graph[i])
+                {
+                    if (e.Capacity > 0)
+                        result.Add((i, e));
+                }
+            }
+
+            return result;
+        }
+
+        public Dictionary<int, string> GetIndexToNodeMap()
+        {
+            return nodeIndex.ToDictionary(x => x.Value, x => x.Key);
         }
     }
 }

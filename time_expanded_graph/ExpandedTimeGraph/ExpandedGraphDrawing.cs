@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using time_expanded_graph.MaxFlowAlgorithms;
 
 namespace time_expanded_graph.ExpandedTimeGraph
 {
@@ -17,79 +18,97 @@ namespace time_expanded_graph.ExpandedTimeGraph
         private const double StartX = 120;
         private const double StartY = 350;
 
+        private Dictionary<string, Point> positions;
+
+        // 🔴 metoda principală cu flow
+        public void DrawWithFlow(
+            ExpandedGraph graph,
+            Canvas canvas,
+            List<(int from, FlowEdge edge)> flowEdges,
+            Dictionary<int, string> indexMap)
+        {
+            Draw(graph, canvas);
+
+            foreach (var fe in flowEdges)
+            {
+                if (fe.edge.Flow <= 0) continue;
+
+                string fromNode = indexMap[fe.from];
+                string toNode = indexMap[fe.edge.To];
+
+                if (!positions.ContainsKey(fromNode) || !positions.ContainsKey(toNode))
+                    continue;
+
+                Point from = positions[fromNode];
+                Point to = positions[toNode];
+
+                // 🔴 linie flow
+                Line flowLine = new Line
+                {
+                    X1 = from.X,
+                    Y1 = from.Y,
+                    X2 = to.X,
+                    Y2 = to.Y,
+                    Stroke = Brushes.Red,
+                    StrokeThickness = 3
+                };
+
+                canvas.Children.Add(flowLine);
+
+                // 🔢 flow/cap
+                double midX = (from.X + to.X) / 2;
+                double midY = (from.Y + to.Y) / 2;
+
+                TextBlock label = new TextBlock
+                {
+                    Text = $"{fe.edge.Flow}/{fe.edge.Capacity}",
+                    FontSize = 9,
+                    Background = Brushes.White,
+                    Foreground = Brushes.Red
+                };
+
+                Canvas.SetLeft(label, midX - 10);
+                Canvas.SetTop(label, midY - 10);
+
+                canvas.Children.Add(label);
+            }
+        }
+
+        // 🔵 desen normal
         public void Draw(ExpandedGraph graph, Canvas canvas)
         {
             canvas.Children.Clear();
+            positions = new Dictionary<string, Point>();
 
-            // 🔹 1. ordonare noduri (coloane fixe)
-            var originalNodes = graph.ExpandedNodes
-                .Where(n => n.Contains("_"))
-                .Select(n =>
-                {
-                    var parts = n.Split('_');
-                    return string.Join("_", parts.Take(parts.Length - 1));
-                })
-                .Distinct()
-                .OrderBy(n =>
-                    n == "s" ? 0 :
-                    n == "t" ? 100 :
-                    n[0] // a, b, c...
-                )
-                .ToList();
-
-            originalNodes.Insert(0, graph.SuperSource);
-            originalNodes.Add(graph.SuperSink);
-
-            Dictionary<string, int> xIndex = new();
-            for (int i = 0; i < originalNodes.Count; i++)
-                xIndex[originalNodes[i]] = i;
-
-            // 🔹 2. poziții
-            Dictionary<string, Point> positions = new();
-
+            // 🔹 calcul poziții
             foreach (var node in graph.ExpandedNodes)
             {
-                if (node == graph.SuperSource || node == graph.SuperSink)
+                // 🔥 ignorăm S* și T*
+                if (!node.Contains("_"))
                     continue;
 
                 var parts = node.Split('_');
 
-                string original = string.Join("_", parts.Take(parts.Length - 1));
+                string original = parts[0];
                 int time = int.Parse(parts.Last());
 
-                double x = StartX + xIndex[original] * SpacingX;
+                double x = StartX + (original[0] - 'a' + 1) * SpacingX;
+
+                if (original == "s") x = StartX;
+                if (original == "t") x = StartX + 6 * SpacingX;
+
                 double y = StartY + (graph.TimeHorizon - time) * SpacingY;
 
                 positions[node] = new Point(x, y);
             }
 
+            // 🔹 S* și T*
             double middleY = StartY + (graph.TimeHorizon * SpacingY) / 2;
 
-            positions[graph.SuperSource] =
-                new Point(StartX - SpacingX, middleY);
+            positions[graph.SuperSource] = new Point(StartX - SpacingX, middleY);
+            positions[graph.SuperSink] = new Point(StartX + 7 * SpacingX, middleY);
 
-            positions[graph.SuperSink] =
-                new Point(StartX + xIndex.Count * SpacingX, middleY);
-
-            // 🔹 3. etichete timp
-            for (int t = 0; t <= graph.TimeHorizon; t++)
-            {
-                double y = StartY + (graph.TimeHorizon - t) * SpacingY;
-
-                TextBlock label = new TextBlock
-                {
-                    Text = $"t={t}",
-                    FontSize = 10,
-                    Foreground = Brushes.Gray
-                };
-
-                Canvas.SetLeft(label, 20);
-                Canvas.SetTop(label, y - 5);
-
-                canvas.Children.Add(label);
-            }
-
-            // 🔹 4. MUCHII + CAPACITĂȚI
+            // 🔹 muchii
             foreach (var edge in graph.ExpandedEdges)
             {
                 if (!positions.ContainsKey(edge.From) ||
@@ -99,20 +118,14 @@ namespace time_expanded_graph.ExpandedTimeGraph
                 Point from = positions[edge.From];
                 Point to = positions[edge.To];
 
-                Brush color;
-                DoubleCollection dash = null;
+                Brush color = edge.Type == ExpandedEdgeType.Holdover
+                    ? Brushes.Gray
+                    : Brushes.DodgerBlue;
 
-                if (edge.Type == ExpandedEdgeType.Holdover)
-                {
-                    color = Brushes.Gray;
-                    dash = new DoubleCollection() { 4, 4 };
-                }
-                else
-                {
-                    color = Brushes.DodgerBlue;
-                }
+                DoubleCollection dash = edge.Type == ExpandedEdgeType.Holdover
+                    ? new DoubleCollection { 4, 4 }
+                    : null;
 
-                // 🔹 desen muchie
                 Line line = new Line
                 {
                     X1 = from.X,
@@ -126,37 +139,28 @@ namespace time_expanded_graph.ExpandedTimeGraph
 
                 canvas.Children.Add(line);
 
-                // 🔹 CAPACITATE (NU pentru holdover)
+                // 🔢 capacitate (doar movement)
                 if (edge.Type != ExpandedEdgeType.Holdover)
                 {
                     double midX = (from.X + to.X) / 2;
                     double midY = (from.Y + to.Y) / 2;
 
-                    Border capContainer = new Border
+                    TextBlock capLabel = new TextBlock
                     {
+                        Text = edge.Capacity.ToString(),
+                        FontSize = 8,
                         Background = Brushes.White,
-                        CornerRadius = new CornerRadius(3),
-                        Padding = new Thickness(2),
-                        BorderBrush = Brushes.LightGray,
-                        BorderThickness = new Thickness(0.5),
-
-                        Child = new TextBlock
-                        {
-                            Text = edge.Capacity.ToString(),
-                            FontSize = 8,
-                            Foreground = Brushes.DarkRed,
-                            FontWeight = FontWeights.SemiBold
-                        }
+                        Foreground = Brushes.DarkRed
                     };
 
-                    Canvas.SetLeft(capContainer, midX - 10);
-                    Canvas.SetTop(capContainer, midY - 10);
+                    Canvas.SetLeft(capLabel, midX - 10);
+                    Canvas.SetTop(capLabel, midY - 10);
 
-                    canvas.Children.Add(capContainer);
+                    canvas.Children.Add(capLabel);
                 }
             }
 
-            // 🔹 5. noduri + etichete
+            // 🔹 noduri
             foreach (var kvp in positions)
             {
                 string node = kvp.Key;
@@ -164,45 +168,39 @@ namespace time_expanded_graph.ExpandedTimeGraph
 
                 Brush fill = Brushes.LightYellow;
 
-                if (node == graph.SuperSource)
-                    fill = Brushes.LightGreen;
-                else if (node == graph.SuperSink)
-                    fill = Brushes.Orange;
+                if (node == graph.SuperSource) fill = Brushes.LightGreen;
+                if (node == graph.SuperSink) fill = Brushes.Orange;
 
                 Ellipse ellipse = new Ellipse
                 {
                     Width = NodeRadius * 2,
                     Height = NodeRadius * 2,
                     Stroke = Brushes.Black,
-                    Fill = fill,
-                    StrokeThickness = 2
+                    Fill = fill
                 };
 
                 Canvas.SetLeft(ellipse, pos.X - NodeRadius);
                 Canvas.SetTop(ellipse, pos.Y - NodeRadius);
+
                 canvas.Children.Add(ellipse);
 
-                // 🔹 etichetă simplificată (fără clutter)
-                var parts = node.Split('_');
-                string original = string.Join("_", parts.Take(parts.Length - 1));
-                string time = parts.Last();
-
-                Border labelContainer = new Border
+                // etichetă
+                Border labelBox = new Border
                 {
                     Background = Brushes.White,
                     Padding = new Thickness(2),
 
                     Child = new TextBlock
                     {
-                        Text = $"{original}_{time}",
+                        Text = node,
                         FontSize = 8
                     }
                 };
 
-                Canvas.SetLeft(labelContainer, pos.X - 18);
-                Canvas.SetTop(labelContainer, pos.Y + 12);
+                Canvas.SetLeft(labelBox, pos.X - 15);
+                Canvas.SetTop(labelBox, pos.Y + 12);
 
-                canvas.Children.Add(labelContainer);
+                canvas.Children.Add(labelBox);
             }
         }
     }

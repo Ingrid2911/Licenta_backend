@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using time_expanded_graph.ExpandedTimeGraph;
+using time_expanded_graph.MaxFlowAlgorithms;
 
 namespace time_expanded_graph.MaxFlowAlgorithms.Dinic
 {
@@ -28,7 +27,6 @@ namespace time_expanded_graph.MaxFlowAlgorithms.Dinic
             return Dinic(s, t);
         }
 
-        // 🔷 BuildGraph (identic ca la Edmonds-Karp)
         private void BuildGraph(ExpandedGraph eg)
         {
             nodeIndex = new Dictionary<string, int>();
@@ -70,7 +68,6 @@ namespace time_expanded_graph.MaxFlowAlgorithms.Dinic
             graph[to].Add(backward);
         }
 
-        // 🔷 BFS (niveluri)
         private bool BFS(int s, int t)
         {
             Array.Fill(level, -1);
@@ -96,7 +93,6 @@ namespace time_expanded_graph.MaxFlowAlgorithms.Dinic
             return level[t] != -1;
         }
 
-        // 🔷 DFS (trimite flow)
         private int DFS(int v, int t, int pushed)
         {
             if (pushed == 0) return 0;
@@ -122,7 +118,6 @@ namespace time_expanded_graph.MaxFlowAlgorithms.Dinic
             return 0;
         }
 
-        // 🔷 Dinic principal
         private int Dinic(int s, int t)
         {
             int flow = 0;
@@ -143,6 +138,28 @@ namespace time_expanded_graph.MaxFlowAlgorithms.Dinic
             }
 
             return flow;
+        }
+
+        // 🔥 pentru vizualizare
+        public List<(int from, FlowEdge edge)> GetAllEdges()
+        {
+            var result = new List<(int, FlowEdge)>();
+
+            for (int i = 0; i < graph.Count; i++)
+            {
+                foreach (var e in graph[i])
+                {
+                    if (e.Capacity > 0)
+                        result.Add((i, e));
+                }
+            }
+
+            return result;
+        }
+
+        public Dictionary<int, string> GetIndexToNodeMap()
+        {
+            return nodeIndex.ToDictionary(x => x.Value, x => x.Key);
         }
     }
 }

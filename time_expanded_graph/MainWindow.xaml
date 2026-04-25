@@ -16,6 +16,16 @@
             <Canvas x:Name="ExpandedGraphCanvas"
                 Background="White"/>
         </TabItem>
+
+        <TabItem Header="Dinic">
+            <Canvas x:Name="DinicGraphCanvas"
+        Background="White"/>
+        </TabItem>
+
+        <TabItem Header="PushRelabel">
+            <Canvas x:Name="PushRelabelGraphCanvas"
+                Background="White"/>
+        </TabItem>
     </TabControl>
 
 

@@ -24,5 +24,6 @@ namespace time_expanded_graph.MaxFlowAlgorithms
         {
             return Capacity - Flow;
         }
+
     }
 }

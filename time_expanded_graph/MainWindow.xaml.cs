@@ -48,8 +48,11 @@ namespace time_expanded_graph
             var expanded = builder.BuildTimeExpandedGraph(graph,4);
 
 
-            var render = new ExpandedGraphDrawing();
-            render.Draw(expanded, ExpandedGraphCanvas);
+            // pentru graful ORIGINAL
+            var simpleRenderer = new SimpleGraphDrawing();
+            simpleRenderer.Draw(graph, OriginalGraphCanvas);
+
+            
 
             //var stopwatch = Stopwatch.StartNew();
             //var solver = new EdmondsKarpSolver(expanded);
@@ -66,6 +69,21 @@ namespace time_expanded_graph
 
             var dinic = new DinicSolver(expanded);
             int flowDinic = dinic.ComputeMaxFlow("S*", "T*");
+
+            var flowEdges = dinic.GetAllEdges();
+            var indexMap = dinic.GetIndexToNodeMap();
+
+            var pr = new PushRelabelSolver(expanded);
+            int flowPR = pr.ComputeMaxFlow("S*", "T*");
+
+            var flowEdgesPR = pr.GetAllEdges();
+            var indexMapPR = pr.GetIndexToNodeMap();
+
+            var expandedRenderer = new ExpandedGraphDrawing();
+            expandedRenderer.Draw(expanded, ExpandedGraphCanvas);
+            expandedRenderer.DrawWithFlow(expanded, DinicGraphCanvas, flowEdges, indexMap);
+            expandedRenderer.DrawWithFlow(expanded, PushRelabelGraphCanvas, flowEdgesPR, indexMapPR);
+
 
             sw.Stop();
 
@@ -88,12 +106,12 @@ namespace time_expanded_graph
 
             var swPush = Stopwatch.StartNew();
 
-            var pr = new PushRelabelSolver(expanded);
-            int flowPushRelabel = pr.ComputeMaxFlow("S*", "T*");
+            //var pr = new PushRelabelSolver(expanded);
+            //int flowPushRelabel = pr.ComputeMaxFlow("S*", "T*");
 
             swPush.Stop();
 
-            Debug.WriteLine($"PushRelabel FLOW = {flowPushRelabel}, TIME = {sw.Elapsed.TotalMilliseconds} ms");
+            //Debug.WriteLine($"PushRelabel FLOW = {flowPushRelabel}, TIME = {sw.Elapsed.TotalMilliseconds} ms");
 
             //MessageBox.Show($"Max Flow Dinic: {flowDinic}\nTime Dinic: {sw.Elapsed.TotalMilliseconds} ms\n");
 
