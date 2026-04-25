@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+internal enum ExpandedEdgeType
+{
+    Holdover,   // a_2 -> a_3 (așteptare)
+    Movement    // a_2 -> b_3 (deplasare)
+}
 namespace time_expanded_graph.ExpandedTimeGraph
 {
+   
     internal class ExpandedEdge
     {
         //properties
@@ -14,13 +19,14 @@ namespace time_expanded_graph.ExpandedTimeGraph
         public int Capacity { get; private set; }
 
         //nu mai avem timp, el este deja in nume ex: a_3
+        public ExpandedEdgeType Type { get; private set; } // 🔥 IMPORTANT
 
-        //methods
-        public ExpandedEdge(string from, string to, int capacity)
+        public ExpandedEdge(string from, string to, int capacity, ExpandedEdgeType type)
         {
             From = from;
             To = to;
             Capacity = capacity;
+            Type = type;
         }
 
     }

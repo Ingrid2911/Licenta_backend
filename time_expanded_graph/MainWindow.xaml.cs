@@ -24,11 +24,11 @@ namespace time_expanded_graph
     {
         public MainWindow()
         {
-            
+            InitializeComponent();
             var graph = GraphGenerator.GenerateGraph(6);
 
-            //var renderer = new SimpleGraphDrawing();
-            //renderer.Draw(graph, OriginalGraphCanvas);
+            var renderer = new SimpleGraphDrawing();
+            renderer.Draw(graph, OriginalGraphCanvas);
 
 
             Debug.WriteLine("=== NODURI ===");
@@ -44,12 +44,12 @@ namespace time_expanded_graph
             }
             Debug.WriteLine($"Număr total muchii: {graph.Edges.Count}");
 
-            //var builder = new TimeExpandedGraphBuilder();
-            //var expanded = builder.BuildTimeExpandedGraph(graph, 25);
+            var builder = new TimeExpandedGraphBuilder();
+            var expanded = builder.BuildTimeExpandedGraph(graph,4);
 
 
-            //var render = new ExpandedGraphDrawing();
-            //render.Draw(expanded, ExpandedGraphCanvas);
+            var render = new ExpandedGraphDrawing();
+            render.Draw(expanded, ExpandedGraphCanvas);
 
             //var stopwatch = Stopwatch.StartNew();
             //var solver = new EdmondsKarpSolver(expanded);
@@ -62,49 +62,52 @@ namespace time_expanded_graph
             //Debug.WriteLine($"EXECUTION TIME = {stopwatch.Elapsed.TotalMilliseconds} ms");
 
 
-            //var sw = Stopwatch.StartNew();
-
-            //var dinic = new DinicSolver(expanded);
-            //int flowDinic = dinic.ComputeMaxFlow("S*", "T*");
-
-            //sw.Stop();
-
-            //Debug.WriteLine($"DINIC FLOW = {flowDinic}, TIME = {sw.Elapsed.TotalMilliseconds} ms");
-
-            int peopleNeeded = 12;
-            int maxTime = 10;
-
             var sw = Stopwatch.StartNew();
 
-            int result = BinarySearch.FindMinimumTime(graph, peopleNeeded, maxTime);
+            var dinic = new DinicSolver(expanded);
+            int flowDinic = dinic.ComputeMaxFlow("S*", "T*");
 
             sw.Stop();
 
-            Debug.WriteLine($"Timp minim = {result}");
+            Debug.WriteLine($"DINIC FLOW = {flowDinic}, TIME = {sw.Elapsed.TotalMilliseconds} ms");
 
-            MessageBox.Show($"Timp minim pentru {peopleNeeded} persoane = {result}\nTimp execuție: {sw.Elapsed.TotalMilliseconds} ms");
-            //var swPush = Stopwatch.StartNew();
+            //int peopleNeeded = 12;
+            //int maxTime = 10;
 
-            //var pr = new PushRelabelSolver(expanded);
-            //int flowPushRelabel = pr.ComputeMaxFlow("S*", "T*");
+            //var sw = Stopwatch.StartNew();
 
-            //swPush.Stop();
+            //int result = BinarySearch.FindMinimumTime(graph, peopleNeeded, maxTime);
 
-            //Debug.WriteLine($"PushRelabel FLOW = {flowPushRelabel}, TIME = {sw.Elapsed.TotalMilliseconds} ms");
+            //sw.Stop();
+
+            //Debug.WriteLine($"Timp minim = {result}");
+
+            //MessageBox.Show($"Timp minim pentru {peopleNeeded} persoane = {result}\nTimp execuție: {sw.Elapsed.TotalMilliseconds} ms");
+
+
+
+            var swPush = Stopwatch.StartNew();
+
+            var pr = new PushRelabelSolver(expanded);
+            int flowPushRelabel = pr.ComputeMaxFlow("S*", "T*");
+
+            swPush.Stop();
+
+            Debug.WriteLine($"PushRelabel FLOW = {flowPushRelabel}, TIME = {sw.Elapsed.TotalMilliseconds} ms");
 
             //MessageBox.Show($"Max Flow Dinic: {flowDinic}\nTime Dinic: {sw.Elapsed.TotalMilliseconds} ms\n");
 
-            //Debug.WriteLine("=== MUCHII EXTINSE (DE ASTEPTARE) ===");
-            //foreach (var e in expanded.ExpandedEdges)
-            //{
-            //    Debug.WriteLine($"{e.From} -> {e.To} cap={e.Capacity}");
-            //}
-            //Debug.WriteLine("=== MUCHII SUPERSURSA SUPERDESTINATIE ===");
-            //foreach (var e in expanded.ExpandedEdges)
-            //{
-            //    if (e.From == "S*" || e.To == "T*")
-            //        Debug.WriteLine($"{e.From} -> {e.To}");
-            //}
+            Debug.WriteLine("=== MUCHII EXTINSE (DE ASTEPTARE) ===");
+            foreach (var e in expanded.ExpandedEdges)
+            {
+                Debug.WriteLine($"{e.From} -> {e.To} cap={e.Capacity}");
+            }
+            Debug.WriteLine("=== MUCHII SUPERSURSA SUPERDESTINATIE ===");
+            foreach (var e in expanded.ExpandedEdges)
+            {
+                if (e.From == "S*" || e.To == "T*")
+                    Debug.WriteLine($"{e.From} -> {e.To}");
+            }
 
         }
     }

@@ -42,7 +42,7 @@ namespace time_expanded_graph.ExpandedTimeGraph
                     string from = node + "_" + t;
                     string to = node + "_" + (t + 1);
 
-                    FinalEdges.Add(new ExpandedEdge(from, to, WAIT_CAPACITY));
+                    FinalEdges.Add(new ExpandedEdge(from, to, WAIT_CAPACITY, ExpandedEdgeType.Holdover));
                 }
             }
 
@@ -54,7 +54,7 @@ namespace time_expanded_graph.ExpandedTimeGraph
                     string from = edge.From + "_" + t;
                     string to = edge.To + "_" + (t + edge.TravelTime);
 
-                    FinalEdges.Add(new ExpandedEdge(from, to, edge.Capacity));
+                    FinalEdges.Add(new ExpandedEdge(from, to, edge.Capacity, ExpandedEdgeType.Movement));
                 }
             }
 
@@ -66,13 +66,13 @@ namespace time_expanded_graph.ExpandedTimeGraph
             string sink = simpleGraph.SinkNode;
 
             // ✔️ FIX CRITIC: doar la t = 0
-            FinalEdges.Add(new ExpandedEdge(SuperSource, source + "_0", INF));
+            FinalEdges.Add(new ExpandedEdge(SuperSource, source + "_0", INF, ExpandedEdgeType.Movement));
 
             // ✔️ sink conectat pe toate timpii
             for (int t = 0; t <= H; t++)
             {
                 string from = sink + "_" + t;
-                FinalEdges.Add(new ExpandedEdge(from, SuperSink, INF));
+                FinalEdges.Add(new ExpandedEdge(from, SuperSink, INF, ExpandedEdgeType.Movement));
             }
 
             // 🔹 5. Creează graful final
