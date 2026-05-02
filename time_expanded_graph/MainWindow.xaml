@@ -1,38 +1,158 @@
 ﻿<Window x:Class="time_expanded_graph.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:time_expanded_graph"
-        mc:Ignorable="d"
-        Title="Time-expanded Grpah" Height="450" Width="800">
-    <TabControl>
-        <TabItem Header="Graf original">
-            <Canvas x:Name="OriginalGraphCanvas"
-                Background="White"/>
-        </TabItem>
+        Title="Time-expanded Graph" Height="900" Width="1400">
 
-        <TabItem Header="Graf time-expanded">
-            <Canvas x:Name="ExpandedGraphCanvas"
-                Background="White"/>
-        </TabItem>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- Zonă principală graf -->
+            <ColumnDefinition Width="*"/>
 
-        <TabItem Header="Dinic">
-            <Canvas x:Name="DinicGraphCanvas"
-        Background="White"/>
-        </TabItem>
+            <!-- Panou control dreapta -->
+            <ColumnDefinition Width="250"/>
+        </Grid.ColumnDefinitions>
 
-        <TabItem Header="PushRelabel">
-            <Canvas x:Name="PushRelabelGraphCanvas"
-                Background="White"/>
-        </TabItem>
+        <!-- STÂNGA -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <TabItem Header="Edmonds-Karp">
-            <Canvas x:Name="EdmondsKarpGraphCanvas"
-        Background="White"/>
-        </TabItem>
-    </TabControl>
+            <!-- REZULTATE -->
+            <Border Background="#DDEEFF" Padding="10">
+                <StackPanel>
+                    <TextBlock x:Name="ResultText"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Text="Timp minim evacuare: -"/>
 
+                    <TextBlock x:Name="FlowResultsText"
+                           Margin="0,8,0,0"
+                           FontSize="18"/>
+                </StackPanel>
+            </Border>
 
+            <!-- TABS -->
+            <TabControl Grid.Row="1">
+                <TabItem Header="Graf original">
+                    <Canvas x:Name="OriginalGraphCanvas" Background="White"/>
+                </TabItem>
 
+                <TabItem Header="Graf time-expanded">
+                    <Canvas x:Name="ExpandedGraphCanvas" Background="White"/>
+                </TabItem>
+
+                <TabItem Header="Dinic">
+                    <Canvas x:Name="DinicGraphCanvas" Background="White"/>
+                </TabItem>
+
+                <TabItem Header="PushRelabel">
+                    <Canvas x:Name="PushRelabelGraphCanvas" Background="White"/>
+                </TabItem>
+
+                <TabItem Header="Edmonds-Karp">
+                    <Canvas x:Name="EdmondsKarpGraphCanvas" Background="White"/>
+                </TabItem>
+            </TabControl>
+        </Grid>
+
+        <!-- DREAPTA -->
+        <Border Grid.Column="1"
+            Background="#F3F6FA"
+            Padding="20"
+            BorderBrush="#C0D0E0"
+            BorderThickness="2">
+
+            <StackPanel VerticalAlignment="Top">
+
+                <TextBlock Text="PARAMETRI"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Margin="0,0,0,20"
+                       HorizontalAlignment="Center"/>
+
+                <!-- Noduri -->
+                <TextBlock Text="Noduri:" FontWeight="Bold"/>
+                <TextBox x:Name="NodesInput"
+                     Height="35"
+                     Margin="0,5,0,15"
+                     FontSize="16"/>
+
+                <!-- Persoane -->
+                <TextBlock Text="Persoane:" FontWeight="Bold"/>
+                <TextBox x:Name="PeopleInput"
+                     Height="35"
+                     Margin="0,5,0,15"
+                     FontSize="16"/>
+
+                <!-- Capacitate Min -->
+                <TextBlock Text="Capacitate Min:" FontWeight="Bold"/>
+                <TextBox x:Name="MinCapInput"
+                     Height="35"
+                     Margin="0,5,0,15"
+                     FontSize="16"/>
+
+                <!-- Capacitate Max -->
+                <TextBlock Text="Capacitate Max:" FontWeight="Bold"/>
+                <TextBox x:Name="MaxCapInput"
+                     Height="35"
+                     Margin="0,5,0,15"
+                     FontSize="16"/>
+
+                <!-- Timp Maxim -->
+                <TextBlock Text="Timp Maxim:" FontWeight="Bold"/>
+                <TextBox x:Name="MaxTimeInput"
+                     Height="35"
+                     Margin="0,5,0,25"
+                     FontSize="16"/>
+
+                <Button Content="Generează Graf"
+        Height="55"
+        Margin="0,5"
+        FontSize="16"
+        FontWeight="Bold"
+        Background="#9bb6d1"
+        Foreground="Black"
+        BorderThickness="0"
+        Cursor="Hand"
+        Click="GenerateGraph_Click">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                    CornerRadius="28">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- Buton Calculează -->
+                <Button Content="Calculează Evacuare"
+        Height="55"
+        Margin="0,10"
+        FontSize="16"
+        FontWeight="Bold"
+        Background="#7fa7cf"
+        Foreground="Black"
+        BorderThickness="0"
+        Cursor="Hand"
+        Click="SolveEvacuation_Click">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                    CornerRadius="28">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+            </StackPanel>
+        </Border>
+    </Grid>
 </Window>

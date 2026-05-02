@@ -1,85 +1,109 @@
-﻿using System.Diagnostics;
+﻿// =========================
+// MainWindow.xaml.cs
+// Refactorizare completă
+// =========================
+
 using System.Windows;
 using time_expanded_graph.Edmonds_Karp;
 using time_expanded_graph.ExpandedTimeGraph;
 using time_expanded_graph.MaxFlowAlgorithms.Dinic;
 using time_expanded_graph.MaxFlowAlgorithms.PushRelabel;
 
-
 namespace time_expanded_graph
 {
     public partial class MainWindow : Window
     {
+        private SimpleGraph currentGraph;
+
         public MainWindow()
         {
             InitializeComponent();
-            var graph = GraphGenerator.GenerateGraph(6);
+        }
+
+        private void GenerateGraph_Click(object sender, RoutedEventArgs e)
+        {
+            int nodes = int.Parse(NodesInput.Text);
+            int minCap = int.Parse(MinCapInput.Text);
+            int maxCap = int.Parse(MaxCapInput.Text);
+
+            currentGraph = GraphGenerator.GenerateGraph(nodes, minCap, maxCap);
 
             var renderer = new SimpleGraphDrawing();
-            renderer.Draw(graph, OriginalGraphCanvas);
+            renderer.Draw(currentGraph, OriginalGraphCanvas);
 
-            Debug.WriteLine("=== NODURI ===");
-            foreach (var node in graph.Nodes)
+            ResultText.Text = "Graf generat.";
+            FlowResultsText.Text = "";
+        }
+
+        private void SolveEvacuation_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentGraph == null)
             {
-                Debug.WriteLine(node);
+                MessageBox.Show("Generează mai întâi graful.");
+                return;
             }
 
-            Debug.WriteLine("=== MUCHII ===");
-            foreach (var edge in graph.Edges)
+            int people = int.Parse(PeopleInput.Text);
+            int maxTime = int.Parse(MaxTimeInput.Text);
+
+            int minimumTime = BinarySearch.FindMinimumTime(
+                currentGraph,
+                people,
+                maxTime
+            );
+
+            if (minimumTime == -1)
             {
-                Debug.WriteLine($"{edge.From} -> {edge.To} | time={edge.TravelTime} | cap={edge.Capacity}");
+                ResultText.Text = "Evacuarea nu este posibilă.";
+                return;
             }
-            Debug.WriteLine($"Număr total muchii: {graph.Edges.Count}");
 
             var builder = new TimeExpandedGraphBuilder();
-            var expanded = builder.BuildTimeExpandedGraph(graph,4);
-     
+            var expanded = builder.BuildTimeExpandedGraph(currentGraph, minimumTime);
+
+            // DINIC
             var dinic = new DinicSolver(expanded);
             int flowDinic = dinic.ComputeMaxFlow("S*", "T*");
-            var flowEdges = dinic.GetAllEdges();
-            var indexMap = dinic.GetIndexToNodeMap();
 
+            // PUSH-RELABEL
             var pr = new PushRelabelSolver(expanded);
             int flowPR = pr.ComputeMaxFlow("S*", "T*");
-            var flowEdgesPR = pr.GetAllEdges();
-            var indexMapPR = pr.GetIndexToNodeMap();
 
+            // EDMONDS-KARP
             var ek = new EdmondsKarpSolver(expanded);
             int flowEK = ek.ComputeMaxFlow("S*", "T*");
-            var flowEdgesEK = ek.GetAllEdges();
-            var indexMapEK = ek.GetIndexToNodeMap();
 
-            var expandedRenderer = new ExpandedGraphDrawing();
-            expandedRenderer.Draw(expanded, ExpandedGraphCanvas);
-            expandedRenderer.DrawWithFlow(expanded, DinicGraphCanvas, flowEdges, indexMap);
-            expandedRenderer.DrawWithFlow(expanded, PushRelabelGraphCanvas, flowEdgesPR, indexMapPR);
-            expandedRenderer.DrawWithFlow(expanded,EdmondsKarpGraphCanvas, flowEdgesEK, indexMapEK);
+            var renderer = new ExpandedGraphDrawing();
 
-            //for (int t = 1; t <= 10; t++)
-            //{
-            //    var builder = new TimeExpandedGraphBuilder();
-            //    var expanded = builder.BuildTimeExpandedGraph(graph, t);
+            renderer.Draw(expanded, ExpandedGraphCanvas);
 
-            //    var dinic = new DinicSolver(expanded);
-            //    int flow = dinic.ComputeMaxFlow("S*", "T*");
+            renderer.DrawWithFlow(
+                expanded,
+                DinicGraphCanvas,
+                dinic.GetAllEdges(),
+                dinic.GetIndexToNodeMap()
+            );
 
-            //    Debug.WriteLine($"T={t} → flow={flow}");
-            //}
-            //int result = BinarySearch.FindMinimumTime(graph, 40, 10);//40 de oameni in maxim 10 unitati de timp
-            //Debug.WriteLine($"Rezultat = {result}");
+            renderer.DrawWithFlow(
+                expanded,
+                PushRelabelGraphCanvas,
+                pr.GetAllEdges(),
+                pr.GetIndexToNodeMap()
+            );
 
-            //Debug.WriteLine("=== MUCHII EXTINSE (DE ASTEPTARE) ===");
-            //foreach (var e in expanded.ExpandedEdges)
-            //{
-            //    Debug.WriteLine($"{e.From} -> {e.To} cap={e.Capacity}");
-            //}
-            //Debug.WriteLine("=== MUCHII SUPERSURSA SUPERDESTINATIE ===");
-            //foreach (var e in expanded.ExpandedEdges)
-            //{
-            //    if (e.From == "S*" || e.To == "T*")
-            //        Debug.WriteLine($"{e.From} -> {e.To}");
-            //}
+            renderer.DrawWithFlow(
+                expanded,
+                EdmondsKarpGraphCanvas,
+                ek.GetAllEdges(),
+                ek.GetIndexToNodeMap()
+            );
 
+            ResultText.Text = $"Timp minim evacuare: {minimumTime}";
+
+            FlowResultsText.Text =
+                $"Dinic: {flowDinic}    " +
+                $"PushRelabel: {flowPR}    " +
+                $"Edmonds-Karp: {flowEK}";
         }
     }
 }

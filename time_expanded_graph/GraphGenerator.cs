@@ -6,45 +6,37 @@ namespace time_expanded_graph
 {
     internal class GraphGenerator
     {
-        public static SimpleGraph GenerateGraph(int totalNodes)
+        public static SimpleGraph GenerateGraph(
+            int totalNodes,
+            int minCapacity,
+            int maxCapacity)
         {
             if (totalNodes < 4)
-                throw new ArgumentException("Minim 4 noduri (s + t + altele)");
+                throw new ArgumentException("Minim 4 noduri");
 
             int intermediateNodes = totalNodes - 2;
-
-            if (intermediateNodes > 26)
-                throw new ArgumentException("Max 26 noduri intermediare (alfabet)");
 
             var nodes = new List<string>();
             var edges = new List<SimpleEdge>();
 
-            // 🔹 s și t
             nodes.Add("s");
             nodes.Add("t");
 
-            // 🔹 generare noduri alfabet (a, b, c...)
-            List<string> alphabetNodes = new List<string>();
+            List<string> alphabetNodes = new();
 
             for (int i = 0; i < intermediateNodes; i++)
             {
-                char letter = (char)('a' + i);
-                alphabetNodes.Add(letter.ToString());
+                alphabetNodes.Add(((char)('a' + i)).ToString());
             }
 
             nodes.AddRange(alphabetNodes);
 
-            Random rnd = new Random(42);
+            Random rnd = new();
 
-            // 🔹 determinăm niveluri (pentru structură)
-            int levels = (int)Math.Sqrt(intermediateNodes);
-            int nodesPerLevel = intermediateNodes / levels;
+            int levels = Math.Max(2, (int)Math.Sqrt(intermediateNodes));
+            int nodesPerLevel = (int)Math.Ceiling((double)intermediateNodes / levels);
 
-            while (levels * nodesPerLevel < intermediateNodes)
-                nodesPerLevel++;
-
-            // 🔹 împărțim nodurile pe niveluri
-            List<List<string>> levelNodes = new List<List<string>>();
+            List<List<string>> levelNodes = new();
 
             int index = 0;
             for (int l = 0; l < levels; l++)
@@ -57,39 +49,47 @@ namespace time_expanded_graph
                     index++;
                 }
 
-                levelNodes.Add(level);
+                if (level.Count > 0)
+                    levelNodes.Add(level);
             }
 
-            // 🔹 s → primul nivel
             foreach (var node in levelNodes[0])
             {
-                edges.Add(new SimpleEdge("s", node, 1, rnd.Next(20, 40)));
+                edges.Add(new SimpleEdge(
+                    "s",
+                    node,
+                    1,
+                    rnd.Next(minCapacity, maxCapacity + 1)
+                ));
             }
 
-            // 🔹 conexiuni între niveluri (mai rare → mai lizibil)
             for (int l = 0; l < levelNodes.Count - 1; l++)
             {
                 foreach (var from in levelNodes[l])
                 {
                     foreach (var to in levelNodes[l + 1])
                     {
-                        if (rnd.NextDouble() < 0.5) // 🔥 densitate mai mică
+                        if (rnd.NextDouble() < 0.7)
                         {
                             edges.Add(new SimpleEdge(
                                 from,
                                 to,
                                 1,
-                                rnd.Next(15, 35)
+                                rnd.Next(minCapacity, maxCapacity + 1)
                             ));
                         }
                     }
                 }
             }
 
-            // 🔹 ultim nivel → t
             foreach (var node in levelNodes.Last())
             {
-                edges.Add(new SimpleEdge(node, "t", 1, rnd.Next(20, 40)));
+                edges.Add(new SimpleEdge(
+                    node,
+                    "t",
+                    1,
+                    rnd.Next(minCapacity, maxCapacity + 1)
+                ));
             }
 
             return new SimpleGraph(nodes, edges, "s", "t");
