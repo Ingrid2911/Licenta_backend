@@ -139,8 +139,6 @@ namespace time_expanded_graph.MaxFlowAlgorithms.Dinic
 
             return flow;
         }
-
-        // 🔥 pentru vizualizare
         public List<(int from, FlowEdge edge)> GetAllEdges()
         {
             var result = new List<(int, FlowEdge)>();
@@ -156,7 +154,6 @@ namespace time_expanded_graph.MaxFlowAlgorithms.Dinic
 
             return result;
         }
-
         public Dictionary<int, string> GetIndexToNodeMap()
         {
             return nodeIndex.ToDictionary(x => x.Value, x => x.Key);

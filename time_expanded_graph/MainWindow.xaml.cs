@@ -42,6 +42,12 @@ namespace time_expanded_graph
                 MessageBox.Show("Generează mai întâi graful.");
                 return;
             }
+            if (!int.TryParse(SecondsPerTimeUnitInput.Text, out int secondsPerTimeUnit) ||
+                secondsPerTimeUnit <= 0)
+            {
+                MessageBox.Show("Introduceți o valoare validă pentru secunde / unitate timp.");
+                return;
+            }
 
             int people = int.Parse(PeopleInput.Text);
             int maxTime = int.Parse(MaxTimeInput.Text);
@@ -97,13 +103,17 @@ namespace time_expanded_graph
                 ek.GetAllEdges(),
                 ek.GetIndexToNodeMap()
             );
+            int evacuationTimeInSeconds = minimumTime * secondsPerTimeUnit;
 
-            ResultText.Text = $"Timp minim evacuare: {minimumTime}";
+            EvacuationTimeSecondsText.Text =
+                $"Timpul minim pentru a evacua {people} persoane este de {evacuationTimeInSeconds} secunde.";
+
+            ResultText.Text = $"Timp minim evacuare: {minimumTime} unitati de timp";
 
             FlowResultsText.Text =
-                $"Dinic: {flowDinic}    " +
-                $"PushRelabel: {flowPR}    " +
-                $"Edmonds-Karp: {flowEK}";
+                $"Dinic: {flowDinic} persoane     " +
+                $"PushRelabel: {flowPR} persoane     " +
+                $"Edmonds-Karp: {flowEK} persoane     ";
         }
     }
 }

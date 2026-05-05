@@ -1,9 +1,140 @@
 ﻿<Window x:Class="time_expanded_graph.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Time-expanded Graph" Height="900" Width="1400">
+        Title="EvacPath" Height="900" Width="1000">
 
-    <Grid>
+    <Window.Resources>
+
+        <!-- Stil pentru containerul tab-urilor -->
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="#2C3943"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Grid.RowDefinitions>
+                                <!-- Bara de tab-uri -->
+                                <RowDefinition Height="Auto"/>
+
+                                <!-- Conținutul tab-ului selectat -->
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Header-ele tab-urilor, împărțite egal -->
+                            <UniformGrid Grid.Row="0"
+                                         Rows="1"
+                                         IsItemsHost="True"
+                                         Background="#2C3943"/>
+
+                            <!-- Conținutul tab-ului activ -->
+                            <Border Grid.Row="1"
+                                    Background="#202B33"
+                                    BorderThickness="0">
+                                <ContentPresenter x:Name="PART_SelectedContentHost"
+                                                  ContentSource="SelectedContent"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Stil pentru fiecare tab -->
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="#A0A0A0"/>
+            <Setter Property="Background" Value="#2C3943"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid>
+                            <Border x:Name="TabBorder"
+                                    Background="{TemplateBinding Background}"
+                                    BorderThickness="0"
+                                    Padding="{TemplateBinding Padding}">
+
+                                <ContentPresenter x:Name="ContentSite"
+                                                  ContentSource="Header"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True"/>
+                            </Border>
+
+                            <!-- Linie accent jos pentru tab-ul activ -->
+                            <Border x:Name="AccentLine"
+                                    Height="3"
+                                    Background="#D37626"
+                                    VerticalAlignment="Bottom"
+                                    Visibility="Collapsed"/>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+
+                            <!-- Tab inactiv -->
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter TargetName="TabBorder"
+                                        Property="Background"
+                                        Value="#2C3943"/>
+
+                                <Setter Property="Foreground"
+                                        Value="#A0A0A0"/>
+                            </Trigger>
+
+                            <!-- Tab activ -->
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder"
+                                        Property="Background"
+                                        Value="#22313A"/>
+
+                                <Setter TargetName="AccentLine"
+                                        Property="Visibility"
+                                        Value="Visible"/>
+
+                                <Setter Property="Foreground"
+                                        Value="White"/>
+                            </Trigger>
+
+                            <!-- Hover discret -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TabBorder"
+                                        Property="Background"
+                                        Value="#34444F"/>
+
+                                <Setter Property="Foreground"
+                                        Value="White"/>
+                            </Trigger>
+
+                            <!-- Dacă este selectat și hover, păstrează aspectul activ -->
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+
+                                <Setter TargetName="TabBorder"
+                                        Property="Background"
+                                        Value="#22313A"/>
+
+                                <Setter Property="Foreground"
+                                        Value="White"/>
+                            </MultiTrigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Background="#181818">
         <Grid.ColumnDefinitions>
             <!-- Zonă principală graf -->
             <ColumnDefinition Width="*"/>
@@ -15,127 +146,191 @@
         <!-- STÂNGA -->
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
+                <!-- Header rezultate -->
                 <RowDefinition Height="Auto"/>
+
+                <!-- Tab-uri + canvas -->
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <!-- REZULTATE -->
-            <Border Background="#DDEEFF" Padding="10">
+            <Border Grid.Row="0"
+                    Background="#202529"
+                    Padding="5">
                 <StackPanel>
                     <TextBlock x:Name="ResultText"
-                           FontSize="24"
-                           FontWeight="Bold"
-                           Text="Timp minim evacuare: -"/>
+                               FontSize="24"
+                               FontWeight="Bold"
+                               Text="Rezultate"
+                               Foreground="White"/>
 
                     <TextBlock x:Name="FlowResultsText"
-                           Margin="0,8,0,0"
-                           FontSize="18"/>
+                               Margin="0,8,0,0"
+                               FontSize="18"
+                               Foreground="White"/>
                 </StackPanel>
             </Border>
 
             <!-- TABS -->
-            <TabControl Grid.Row="1">
+            <TabControl Grid.Row="1"
+                        Background="#2C3943">
+
                 <TabItem Header="Graf original">
-                    <Canvas x:Name="OriginalGraphCanvas" Background="White"/>
+                    <Canvas x:Name="OriginalGraphCanvas"
+                            Background="#202B33"/>
                 </TabItem>
 
-                <TabItem Header="Graf time-expanded">
-                    <Canvas x:Name="ExpandedGraphCanvas" Background="White"/>
+                <TabItem Header="Time-expanded">
+                    <Canvas x:Name="ExpandedGraphCanvas"
+                            Background="#202B33"/>
                 </TabItem>
 
                 <TabItem Header="Dinic">
-                    <Canvas x:Name="DinicGraphCanvas" Background="White"/>
+                    <Canvas x:Name="DinicGraphCanvas"
+                            Background="#202B33"/>
                 </TabItem>
 
-                <TabItem Header="PushRelabel">
-                    <Canvas x:Name="PushRelabelGraphCanvas" Background="White"/>
+                <TabItem Header="Push-Relabel">
+                    <Canvas x:Name="PushRelabelGraphCanvas"
+                            Background="#202B33"/>
                 </TabItem>
 
                 <TabItem Header="Edmonds-Karp">
-                    <Canvas x:Name="EdmondsKarpGraphCanvas" Background="White"/>
+                    <Canvas x:Name="EdmondsKarpGraphCanvas"
+                            Background="#202B33"/>
                 </TabItem>
+
             </TabControl>
         </Grid>
 
         <!-- DREAPTA -->
         <Border Grid.Column="1"
-            Background="#F3F6FA"
-            Padding="20"
-            BorderBrush="#C0D0E0"
-            BorderThickness="2">
+                Background="#2C3943"
+                Padding="20">
 
             <StackPanel VerticalAlignment="Top">
 
                 <TextBlock Text="PARAMETRI"
-                       FontSize="24"
-                       FontWeight="Bold"
-                       Margin="0,0,0,20"
-                       HorizontalAlignment="Center"/>
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Margin="0,0,0,20"
+                           HorizontalAlignment="Center"
+                           Foreground="White"/>
 
                 <!-- Noduri -->
-                <TextBlock Text="Noduri:" FontWeight="Bold"/>
+                <TextBlock Text="Noduri:"
+                           FontWeight="Bold"
+                           Foreground="White"/>
+
                 <TextBox x:Name="NodesInput"
-                     Height="35"
-                     Margin="0,5,0,15"
-                     FontSize="16"/>
+                         Height="25"
+                         Margin="0,5,0,15"
+                         FontSize="16"
+                         Background="#181F26"
+                         Foreground="White"
+                         BorderBrush="#3C4D5D"
+                         BorderThickness="1"/>
 
                 <!-- Persoane -->
-                <TextBlock Text="Persoane:" FontWeight="Bold"/>
+                <TextBlock Text="Persoane:"
+                           FontWeight="Bold"
+                           Foreground="White"/>
+
                 <TextBox x:Name="PeopleInput"
-                     Height="35"
-                     Margin="0,5,0,15"
-                     FontSize="16"/>
+                         Height="25"
+                         Margin="0,5,0,15"
+                         FontSize="16"
+                         Background="#181F26"
+                         Foreground="White"
+                         BorderBrush="#3C4D5D"
+                         BorderThickness="1"/>
 
                 <!-- Capacitate Min -->
-                <TextBlock Text="Capacitate Min:" FontWeight="Bold"/>
+                <TextBlock Text="Capacitate Min:"
+                           FontWeight="Bold"
+                           Foreground="White"/>
+
                 <TextBox x:Name="MinCapInput"
-                     Height="35"
-                     Margin="0,5,0,15"
-                     FontSize="16"/>
+                         Height="25"
+                         Margin="0,5,0,15"
+                         FontSize="16"
+                         Background="#181F26"
+                         Foreground="White"
+                         BorderBrush="#3C4D5D"
+                         BorderThickness="1"/>
 
                 <!-- Capacitate Max -->
-                <TextBlock Text="Capacitate Max:" FontWeight="Bold"/>
+                <TextBlock Text="Capacitate Max:"
+                           FontWeight="Bold"
+                           Foreground="White"/>
+
                 <TextBox x:Name="MaxCapInput"
-                     Height="35"
-                     Margin="0,5,0,15"
-                     FontSize="16"/>
+                         Height="25"
+                         Margin="0,5,0,15"
+                         FontSize="16"
+                         Background="#181F26"
+                         Foreground="White"
+                         BorderBrush="#3C4D5D"
+                         BorderThickness="1"/>
 
                 <!-- Timp Maxim -->
-                <TextBlock Text="Timp Maxim:" FontWeight="Bold"/>
-                <TextBox x:Name="MaxTimeInput"
-                     Height="35"
-                     Margin="0,5,0,25"
-                     FontSize="16"/>
+                <TextBlock Text="Timp Maxim (unitati de timp):"
+           FontWeight="Bold"
+           Foreground="White"/>
 
-                <Button Content="Generează Graf"
-        Height="55"
-        Margin="0,5"
-        FontSize="16"
-        FontWeight="Bold"
-        Background="#9bb6d1"
-        Foreground="Black"
-        BorderThickness="0"
-        Cursor="Hand"
-        Click="GenerateGraph_Click">
+                <TextBox x:Name="MaxTimeInput"
+         Height="25"
+         Margin="0,5,0,15"
+         FontSize="16"
+         Background="#181F26"
+         Foreground="White"
+         BorderBrush="#3C4D5D"
+         BorderThickness="1"/>
+
+                <!-- Secunde per unitate de timp -->
+                <TextBlock Text="Secunde / unitate timp:"
+           FontWeight="Bold"
+           Foreground="White"/>
+
+                <TextBox x:Name="SecondsPerTimeUnitInput"
+         Height="25"
+         Margin="0,5,0,25"
+         FontSize="16"
+         Text="10"
+         Background="#181F26"
+         Foreground="White"
+         BorderBrush="#3C4D5D"
+         BorderThickness="1"/>
+                <!-- Buton Generează -->
+                <Button Content="GENERARE GRAF"
+                        Height="55"
+                        Margin="0,5"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Background="#DB7602"
+                        Foreground="Black"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Click="GenerateGraph_Click">
 
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}"
-                    CornerRadius="28">
+                                    CornerRadius="28">
                                 <ContentPresenter HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
+                                                  VerticalAlignment="Center"/>
                             </Border>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
 
                 <!-- Buton Calculează -->
-                <Button Content="Calculează Evacuare"
+                <Button Content="SIMULARE EVACUARE"
         Height="55"
         Margin="0,10"
         FontSize="16"
         FontWeight="Bold"
-        Background="#7fa7cf"
+        Background="#039926"
         Foreground="Black"
         BorderThickness="0"
         Cursor="Hand"
@@ -151,6 +346,16 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
+
+                <!-- Mesaj timp minim în secunde -->
+                <TextBlock x:Name="EvacuationTimeSecondsText"
+           Margin="0,25,0,0"
+           FontSize="22"
+           FontWeight="SemiBold"
+           Foreground="White"
+           TextWrapping="Wrap"
+           TextAlignment="Center"
+           Text="Soluție"/>
 
             </StackPanel>
         </Border>

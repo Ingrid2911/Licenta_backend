@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace time_expanded_graph
 {
-    internal class SimpleGraph //pe viitor s-ar putea sa il schimb in public
+    internal class SimpleGraph 
     {
         //properties
-        public List<string> Nodes { get; private set; } //List, NU vector<>
+        public List<string> Nodes { get; private set; } 
         public List <SimpleEdge> Edges{get; private set; }
         public string SourceNode{get; private set;}
         public string SinkNode{get; private set;}
