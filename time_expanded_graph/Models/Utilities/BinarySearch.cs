@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics;
-using time_expanded_graph.ExpandedTimeGraph;
-using time_expanded_graph.MaxFlowAlgorithms.Dinic;
+using time_expanded_graph.Models.Algorithms;
+using time_expanded_graph.Models.Graphs;
+using time_expanded_graph.Models.Builders;
 
-namespace time_expanded_graph
+namespace time_expanded_graph.Models.Utilities
 {
     internal class BinarySearch
     {

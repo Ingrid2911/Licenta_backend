@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace time_expanded_graph.MaxFlowAlgorithms
+namespace time_expanded_graph.Models.Graphs
 {
-    internal class FlowEdge
+    public class FlowEdge
     {
         public int To;
         public int Capacity;

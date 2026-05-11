@@ -5,9 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using time_expanded_graph.MaxFlowAlgorithms;
+using time_expanded_graph.Models.Graphs;
 
-namespace time_expanded_graph.ExpandedTimeGraph
+namespace time_expanded_graph.View.Drawing
 {
     internal class ExpandedGraphDrawing
     {
@@ -143,7 +143,7 @@ namespace time_expanded_graph.ExpandedTimeGraph
             }
 
             // poziții pentru S* și T*
-            double middleY = StartY + (graph.TimeHorizon * SpacingY) / 2;
+            double middleY = StartY + graph.TimeHorizon * SpacingY / 2;
 
             positions[graph.SuperSource] = new Point(StartX - SpacingX, middleY);
             positions[graph.SuperSink] = new Point(StartX + 7 * SpacingX, middleY);
@@ -324,7 +324,7 @@ namespace time_expanded_graph.ExpandedTimeGraph
             foreach (char c in key)
                 sum += c;
 
-            return (sum % 2 == 0) ? 1 : -1;
+            return sum % 2 == 0 ? 1 : -1;
         }
 
         // =========================================================

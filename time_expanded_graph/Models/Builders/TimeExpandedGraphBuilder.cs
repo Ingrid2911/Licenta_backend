@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using time_expanded_graph.Models.Graphs;
 
-namespace time_expanded_graph.ExpandedTimeGraph
+namespace time_expanded_graph.Models.Builders
 {
-    internal enum ExpandedEdgeType
-    {
-        Holdover,   // a_t -> a_{t+1}
-        Movement    // a_t -> b_{t+travelTime}
-    }
 
     internal class TimeExpandedGraphBuilder
     {

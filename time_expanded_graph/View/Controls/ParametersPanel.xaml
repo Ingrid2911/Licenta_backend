@@ -1,0 +1,149 @@
+﻿<UserControl x:Class="time_expanded_graph.View.Controls.ParametersPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border Background="#2C3943"
+            Padding="20">
+
+        <StackPanel VerticalAlignment="Top">
+
+            <TextBlock Text="PARAMETRI"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Margin="0,0,0,20"
+                       HorizontalAlignment="Center"
+                       Foreground="White"/>
+
+            <TextBlock Text="Noduri:"
+                       FontWeight="Bold"
+                       Foreground="White"/>
+
+            <TextBox Text="{Binding Nodes, UpdateSourceTrigger=PropertyChanged}"
+                     Height="25"
+                     Margin="0,5,0,15"
+                     FontSize="16"
+                     Background="#181F26"
+                     Foreground="White"
+                     BorderBrush="#3C4D5D"
+                     BorderThickness="1"/>
+
+            <TextBlock Text="Persoane:"
+                       FontWeight="Bold"
+                       Foreground="White"/>
+
+            <TextBox Text="{Binding People, UpdateSourceTrigger=PropertyChanged}"
+                     Height="25"
+                     Margin="0,5,0,15"
+                     FontSize="16"
+                     Background="#181F26"
+                     Foreground="White"
+                     BorderBrush="#3C4D5D"
+                     BorderThickness="1"/>
+
+            <TextBlock Text="Capacitate Min:"
+                       FontWeight="Bold"
+                       Foreground="White"/>
+
+            <TextBox Text="{Binding MinCap, UpdateSourceTrigger=PropertyChanged}"
+                     Height="25"
+                     Margin="0,5,0,15"
+                     FontSize="16"
+                     Background="#181F26"
+                     Foreground="White"
+                     BorderBrush="#3C4D5D"
+                     BorderThickness="1"/>
+
+            <TextBlock Text="Capacitate Max:"
+                       FontWeight="Bold"
+                       Foreground="White"/>
+
+            <TextBox Text="{Binding MaxCap, UpdateSourceTrigger=PropertyChanged}"
+                     Height="25"
+                     Margin="0,5,0,15"
+                     FontSize="16"
+                     Background="#181F26"
+                     Foreground="White"
+                     BorderBrush="#3C4D5D"
+                     BorderThickness="1"/>
+
+            <TextBlock Text="Timp Maxim (unitati de timp):"
+                       FontWeight="Bold"
+                       Foreground="White"/>
+
+            <TextBox Text="{Binding MaxTime, UpdateSourceTrigger=PropertyChanged}"
+                     Height="25"
+                     Margin="0,5,0,15"
+                     FontSize="16"
+                     Background="#181F26"
+                     Foreground="White"
+                     BorderBrush="#3C4D5D"
+                     BorderThickness="1"/>
+
+            <TextBlock Text="Secunde / unitate timp:"
+                       FontWeight="Bold"
+                       Foreground="White"/>
+
+            <TextBox Text="{Binding SecondsPerTimeUnit, UpdateSourceTrigger=PropertyChanged}"
+                     Height="25"
+                     Margin="0,5,0,25"
+                     FontSize="16"
+                     Background="#181F26"
+                     Foreground="White"
+                     BorderBrush="#3C4D5D"
+                     BorderThickness="1"/>
+
+            <Button Content="GENERARE GRAF"
+                    Height="55"
+                    Margin="0,5"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Background="#DB7602"
+                    Foreground="Black"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Command="{Binding GenerateGraphCommand}">
+
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="28">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <Button Content="SIMULARE EVACUARE"
+                    Height="55"
+                    Margin="0,10"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Background="#039926"
+                    Foreground="Black"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Command="{Binding SolveEvacuationCommand}">
+
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="28">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <TextBlock Margin="0,25,0,0"
+                       FontSize="22"
+                       FontWeight="SemiBold"
+                       Foreground="White"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Text="{Binding EvacuationTimeSecondsText}"/>
+
+        </StackPanel>
+    </Border>
+</UserControl>

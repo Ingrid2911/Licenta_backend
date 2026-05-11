@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="time_expanded_graph.View.Controls.GraphTabsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <TabControl Background="#2C3943">
+
+        <TabItem Header="Graf original">
+            <Canvas x:Name="OriginalGraphCanvas"
+                    Background="#202B33"/>
+        </TabItem>
+
+        <TabItem Header="Time-expanded">
+            <Canvas x:Name="ExpandedGraphCanvas"
+                    Background="#202B33"/>
+        </TabItem>
+
+        <TabItem Header="Dinic">
+            <Canvas x:Name="DinicGraphCanvas"
+                    Background="#202B33"/>
+        </TabItem>
+
+        <TabItem Header="Push-Relabel">
+            <Canvas x:Name="PushRelabelGraphCanvas"
+                    Background="#202B33"/>
+        </TabItem>
+
+        <TabItem Header="Edmonds-Karp">
+            <Canvas x:Name="EdmondsKarpGraphCanvas"
+                    Background="#202B33"/>
+        </TabItem>
+
+    </TabControl>
+</UserControl>

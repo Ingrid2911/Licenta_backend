@@ -5,9 +5,9 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace time_expanded_graph
+namespace time_expanded_graph.Models.Graphs
 {
-    internal class SimpleGraph 
+    public class SimpleGraph 
     {
         //properties
         public List<string> Nodes { get; private set; } 
@@ -18,10 +18,10 @@ namespace time_expanded_graph
         //methods
         public SimpleGraph(List<string> nodes, List<SimpleEdge> edges, string sourceNode, string sinkNode)
         {
-            this.Nodes = nodes;
-            this.Edges = edges; 
-            this.SourceNode = sourceNode;
-            this.SinkNode = sinkNode;
+            Nodes = nodes;
+            Edges = edges; 
+            SourceNode = sourceNode;
+            SinkNode = sinkNode;
         }
     }
 }

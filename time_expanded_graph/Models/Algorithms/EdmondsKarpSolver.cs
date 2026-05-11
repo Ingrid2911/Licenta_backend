@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using time_expanded_graph.ExpandedTimeGraph;
-using time_expanded_graph.MaxFlowAlgorithms;
+using time_expanded_graph.Models.Graphs;
 
-namespace time_expanded_graph.Edmonds_Karp
+namespace time_expanded_graph.Models.Algorithms
 {
     internal class EdmondsKarpSolver
     {

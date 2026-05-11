@@ -1,13 +1,12 @@
-﻿
-internal enum ExpandedEdgeType
+﻿public enum ExpandedEdgeType
 {
     Holdover,   // a_2 -> a_3 (așteptare)
     Movement    // a_2 -> b_3 (deplasare)
 }
-namespace time_expanded_graph.ExpandedTimeGraph
+namespace time_expanded_graph.Models.Graphs
 {
    
-    internal class ExpandedEdge
+    public class ExpandedEdge
     {
         //properties
         public string From { get; private set; } //conventie: nod_original + "_" + timp

@@ -5,8 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using time_expanded_graph.Models.Graphs;
 
-namespace time_expanded_graph
+namespace time_expanded_graph.View.Drawing
 {
     internal class SimpleGraphDrawing
     {

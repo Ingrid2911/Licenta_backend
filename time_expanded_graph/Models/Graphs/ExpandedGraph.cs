@@ -5,9 +5,9 @@ using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace time_expanded_graph.ExpandedTimeGraph
+namespace time_expanded_graph.Models.Graphs
 {
-    internal class ExpandedGraph
+    public class ExpandedGraph
     {
         //properties
         public HashSet<string> ExpandedNodes { get; private set; } //mai potrivit decat List, impiedica adaugarea automata de noduri duplicate
