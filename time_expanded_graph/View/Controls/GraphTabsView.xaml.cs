@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
+using time_expanded_graph.Models.Building;
 using time_expanded_graph.Models.Graphs;
 using time_expanded_graph.View.Drawing;
 
@@ -10,7 +12,34 @@ namespace time_expanded_graph.View.Controls
         public GraphTabsView()
         {
             InitializeComponent();
+
+            // Subscrierea la evenimentul din BuildingPlanView se face în code-behind,
+            // NU în XAML (pentru a evita eroarea XDG0008).
+            BuildingPlan.BuildGraphRequested += OnBuildingPlanBuildGraphRequested;
         }
+
+        // ─── Plan Clădire ─────────────────────────────────────────────────────────
+
+        public BuildingPlan GetBuildingPlan() => BuildingPlan.Plan;
+
+        /// <summary>
+        /// Propagă evenimentul "Construiește Graf" din tab-ul Plan Clădire spre MainWindow.
+        /// </summary>
+        public event EventHandler? BuildingGraphRequested;
+
+        private void OnBuildingPlanBuildGraphRequested(object? sender, EventArgs e)
+        {
+            BuildingGraphRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void HighlightEvacuationPath(IEnumerable<string> nodeIds)
+        {
+            BuildingPlan.HighlightEvacuationPath(nodeIds);
+        }
+
+        public void ClearEvacuationPath() => BuildingPlan.ClearPath();
+
+        // ─── Grafuri debug ────────────────────────────────────────────────────────
 
         public void DrawSimpleGraph(SimpleGraph graph)
         {
@@ -35,26 +64,14 @@ namespace time_expanded_graph.View.Controls
         {
             var renderer = new ExpandedGraphDrawing();
 
-            renderer.DrawWithFlow(
-                graph,
-                DinicGraphCanvas,
-                dinicEdges,
-                dinicIndexToNodeMap
-            );
+            renderer.DrawWithFlow(graph, DinicGraphCanvas,
+                dinicEdges, dinicIndexToNodeMap);
 
-            renderer.DrawWithFlow(
-                graph,
-                PushRelabelGraphCanvas,
-                pushRelabelEdges,
-                pushRelabelIndexToNodeMap
-            );
+            renderer.DrawWithFlow(graph, PushRelabelGraphCanvas,
+                pushRelabelEdges, pushRelabelIndexToNodeMap);
 
-            renderer.DrawWithFlow(
-                graph,
-                EdmondsKarpGraphCanvas,
-                edmondsKarpEdges,
-                edmondsKarpIndexToNodeMap
-            );
+            renderer.DrawWithFlow(graph, EdmondsKarpGraphCanvas,
+                edmondsKarpEdges, edmondsKarpIndexToNodeMap);
         }
     }
 }

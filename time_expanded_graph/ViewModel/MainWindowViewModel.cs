@@ -1,9 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using time_expanded_graph.Models.Algorithms;
 using time_expanded_graph.Models.Builders;
+using time_expanded_graph.Models.Building;
 using time_expanded_graph.Models.Generators;
 using time_expanded_graph.Models.Graphs;
 using time_expanded_graph.Models.Utilities;
@@ -12,11 +15,15 @@ namespace time_expanded_graph.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private SimpleGraph currentGraph;
-        private ExpandedGraph currentExpandedGraph;
+        // ─── Stare graf ───────────────────────────────────────────────────────────
 
-        public SimpleGraph CurrentGraph => currentGraph;
-        public ExpandedGraph CurrentExpandedGraph => currentExpandedGraph;
+        private SimpleGraph? currentGraph;
+        private ExpandedGraph? currentExpandedGraph;
+
+        public SimpleGraph? CurrentGraph => currentGraph;
+        public ExpandedGraph? CurrentExpandedGraph => currentExpandedGraph;
+
+        // ─── Parametri (mod debug - graf random) ─────────────────────────────────
 
         public string Nodes { get; set; } = "";
         public string MinCap { get; set; } = "";
@@ -25,64 +32,63 @@ namespace time_expanded_graph.ViewModels
         public string MaxTime { get; set; } = "";
         public string SecondsPerTimeUnit { get; set; } = "";
 
-        private string resultText;
+        // ─── Text afișat ──────────────────────────────────────────────────────────
+
+        private string _resultText = "Rezultate";
         public string ResultText
         {
-            get => resultText;
-            set
-            {
-                resultText = value;
-                OnPropertyChanged();
-            }
+            get => _resultText;
+            set { _resultText = value; OnPropertyChanged(); }
         }
 
-        private string flowResultsText;
+        private string _flowResultsText = "";
         public string FlowResultsText
         {
-            get => flowResultsText;
-            set
-            {
-                flowResultsText = value;
-                OnPropertyChanged();
-            }
+            get => _flowResultsText;
+            set { _flowResultsText = value; OnPropertyChanged(); }
         }
 
-        private string evacuationTimeSecondsText;
+        private string _evacuationTimeSecondsText = "Soluție";
         public string EvacuationTimeSecondsText
         {
-            get => evacuationTimeSecondsText;
-            set
-            {
-                evacuationTimeSecondsText = value;
-                OnPropertyChanged();
-            }
+            get => _evacuationTimeSecondsText;
+            set { _evacuationTimeSecondsText = value; OnPropertyChanged(); }
         }
 
-        public List<(int from, FlowEdge edge)> DinicEdges { get; private set; }
-        public List<(int from, FlowEdge edge)> PushRelabelEdges { get; private set; }
-        public List<(int from, FlowEdge edge)> EdmondsKarpEdges { get; private set; }
-        public Dictionary<int, string> DinicIndexToNodeMap { get; private set; }
+        // ─── Rezultate algoritmi ──────────────────────────────────────────────────
 
-        public Dictionary<int, string> PushRelabelIndexToNodeMap { get; private set; }
+        public List<(int from, FlowEdge edge)>? DinicEdges { get; private set; }
+        public List<(int from, FlowEdge edge)>? PushRelabelEdges { get; private set; }
+        public List<(int from, FlowEdge edge)>? EdmondsKarpEdges { get; private set; }
 
-        public Dictionary<int, string> EdmondsKarpIndexToNodeMap { get; private set; }
+        public Dictionary<int, string>? DinicIndexToNodeMap { get; private set; }
+        public Dictionary<int, string>? PushRelabelIndexToNodeMap { get; private set; }
+        public Dictionary<int, string>? EdmondsKarpIndexToNodeMap { get; private set; }
+
+        // Drumul optim extras pentru planul clădirii
+        public List<string> OptimalEvacuationPath { get; private set; } = new();
+
+        // ─── Comenzi ─────────────────────────────────────────────────────────────
 
         public ICommand GenerateGraphCommand { get; }
         public ICommand SolveEvacuationCommand { get; }
 
-        public event Action SimpleGraphGenerated;
-        public event Action ExpandedGraphGenerated;
-        public event Action AlgorithmsExecuted;
+        // ─── Evenimente ──────────────────────────────────────────────────────────
+
+        public event Action? SimpleGraphGenerated;
+        public event Action? ExpandedGraphGenerated;
+        public event Action? AlgorithmsExecuted;
+        public event Action? EvacuationPathReady;  // NOU: drum optim disponibil
+
+        // ─── Constructor ─────────────────────────────────────────────────────────
 
         public MainWindowViewModel()
         {
-            ResultText = "Rezultate";
-            FlowResultsText = "";
-            EvacuationTimeSecondsText = "Soluție";
-
             GenerateGraphCommand = new RelayCommand(GenerateGraph);
             SolveEvacuationCommand = new RelayCommand(SolveEvacuation);
         }
+
+        // ─── Mod debug: graf random ───────────────────────────────────────────────
 
         private void GenerateGraph()
         {
@@ -99,6 +105,7 @@ namespace time_expanded_graph.ViewModels
             ResultText = "Graf generat.";
             FlowResultsText = "";
             EvacuationTimeSecondsText = "";
+            OptimalEvacuationPath = new List<string>();
 
             SimpleGraphGenerated?.Invoke();
         }
@@ -111,32 +118,86 @@ namespace time_expanded_graph.ViewModels
                 return;
             }
 
-            if (!int.TryParse(People, out int people) ||
-                !int.TryParse(MaxTime, out int maxTime) ||
-                !int.TryParse(SecondsPerTimeUnit, out int secondsPerTimeUnit) ||
-                secondsPerTimeUnit <= 0)
+            RunEvacuationAlgorithms(currentGraph);
+        }
+
+        // ─── Mod Plan Clădire ─────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Convertește planul clădirii într-un SimpleGraph și rulează algoritmii.
+        /// </summary>
+        public void SolveFromBuildingPlan(BuildingPlan plan)
+        {
+            if (!int.TryParse(People, out int people) || people <= 0)
             {
-                MessageBox.Show("Introduceți valori numerice valide pentru persoane, timp maxim și secunde / unitate timp.");
+                MessageBox.Show("Introduceți numărul de persoane în câmpul 'Persoane' din panoul din dreapta.");
+                return;
+            }
+            if (!int.TryParse(MaxTime, out int maxTime) || maxTime <= 0)
+            {
+                MessageBox.Show("Introduceți timpul maxim în câmpul 'Timp Maxim' din panoul din dreapta.");
+                return;
+            }
+            if (!int.TryParse(SecondsPerTimeUnit, out int secPerUnit) || secPerUnit <= 0)
+            {
+                MessageBox.Show("Introduceți secunde/unitate timp în panoul din dreapta.");
                 return;
             }
 
-            int minimumTime = BinarySearch.FindMinimumTime(
-                currentGraph,
-                people,
-                maxTime
-            );
+            var (graph, error) = plan.ToSimpleGraph();
+
+            if (graph == null)
+            {
+                MessageBox.Show($"Planul nu este valid:\n{error}", "Eroare plan",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            currentGraph = graph;
+            SimpleGraphGenerated?.Invoke();
+
+            RunEvacuationAlgorithms(graph, people, maxTime, secPerUnit);
+        }
+
+        // ─── Logică comună evacuare ───────────────────────────────────────────────
+
+        private void RunEvacuationAlgorithms(
+            SimpleGraph graph,
+            int people = -1,
+            int maxTime = -1,
+            int secondsPerTimeUnit = 1)
+        {
+            // Dacă nu se specifică people/maxTime, îi luăm din câmpuri
+            if (people < 0 && !int.TryParse(People, out people))
+            {
+                MessageBox.Show("Introduceți numărul de persoane.");
+                return;
+            }
+            if (maxTime < 0 && !int.TryParse(MaxTime, out maxTime))
+            {
+                MessageBox.Show("Introduceți timpul maxim.");
+                return;
+            }
+            if (secondsPerTimeUnit <= 0 &&
+                !int.TryParse(SecondsPerTimeUnit, out secondsPerTimeUnit))
+                secondsPerTimeUnit = 1;
+
+            int minimumTime = BinarySearch.FindMinimumTime(graph, people, maxTime);
 
             if (minimumTime == -1)
             {
-                ResultText = "Evacuarea nu este posibilă.";
+                ResultText = "Evacuarea nu este posibilă în timpul specificat.";
+                FlowResultsText = "";
+                EvacuationTimeSecondsText = "";
                 return;
             }
 
             var builder = new TimeExpandedGraphBuilder();
-            currentExpandedGraph = builder.BuildTimeExpandedGraph(currentGraph, minimumTime);
+            currentExpandedGraph = builder.BuildTimeExpandedGraph(graph, minimumTime);
 
             ExpandedGraphGenerated?.Invoke();
 
+            // Rulăm toți cei 3 algoritmi
             var dinic = new DinicSolver(currentExpandedGraph);
             int flowDinic = dinic.ComputeMaxFlow("S*", "T*");
 
@@ -148,33 +209,38 @@ namespace time_expanded_graph.ViewModels
 
             DinicEdges = dinic.GetAllEdges();
             DinicIndexToNodeMap = dinic.GetIndexToNodeMap();
-
             PushRelabelEdges = pr.GetAllEdges();
             PushRelabelIndexToNodeMap = pr.GetIndexToNodeMap();
-
             EdmondsKarpEdges = ek.GetAllEdges();
             EdmondsKarpIndexToNodeMap = ek.GetIndexToNodeMap();
 
             AlgorithmsExecuted?.Invoke();
 
-            int evacuationTimeInSeconds = minimumTime * secondsPerTimeUnit;
+            // Extrage drumul optim pentru vizualizarea pe plan
+            if (DinicEdges != null && DinicIndexToNodeMap != null)
+            {
+                OptimalEvacuationPath = EvacuationPathExtractor.ExtractPath(
+                    DinicEdges, DinicIndexToNodeMap, graph);
+            }
 
+            EvacuationPathReady?.Invoke();
+
+            int evacuationSec = minimumTime * secondsPerTimeUnit;
+
+            ResultText = $"Timp minim evacuare: {minimumTime} unități de timp";
             EvacuationTimeSecondsText =
-                $"Timpul minim pentru a evacua {People} persoane este de {evacuationTimeInSeconds} secunde.";
-
-            ResultText = $"Timp minim evacuare: {minimumTime} unitati de timp";
-
+                $"Timpul minim pentru a evacua {people} persoane este de {evacuationSec} secunde.";
             FlowResultsText =
                 $"Dinic: {flowDinic} persoane     " +
                 $"PushRelabel: {flowPR} persoane     " +
                 $"Edmonds-Karp: {flowEK} persoane     ";
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        // ─── INotifyPropertyChanged ────────────────────────────────────────────────
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
