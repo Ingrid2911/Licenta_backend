@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <UserControl.Resources>
-        <!-- Stil paletă definit LOCAL pentru a nu depinde de Style.xaml global -->
         <Style x:Key="PaletteBtn" TargetType="Button">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Padding" Value="10,0"/>
@@ -35,7 +34,6 @@
             </Setter>
         </Style>
 
-        <!-- Stil ToggleButton paletă -->
         <Style x:Key="ConnectToggleBtn" TargetType="ToggleButton">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Padding" Value="10,0"/>
@@ -76,7 +74,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Bara de instrumente -->
         <Border Grid.Row="0"
                 Background="#202B35"
                 Padding="8,6"
@@ -141,41 +138,33 @@
                         Click="BtnClear_Click"/>
 
                 <Button x:Name="BtnBuildGraph"
-                        Content="⚡ Construiește Graf"
+                        Content="Simulează evacuarea"
                         Style="{StaticResource PaletteBtn}"
                         Background="#00695C"
                         Click="BtnBuildGraph_Click"
                         ToolTip="Convertește planul și rulează algoritmii"/>
 
-                <TextBlock x:Name="StatusText"
-                           Text="Adaugă elemente din paletă, apoi conectează-le."
-                           Foreground="#78909C"
-                           FontSize="11"
-                           VerticalAlignment="Center"
-                           Margin="12,0,0,0"/>
                 <Button x:Name="BtnSavePlan"
-        Content="💾 Salvează"
-        Style="{StaticResource PaletteBtn}"
-        Background="#455A64"
-        Click="BtnSavePlan_Click"/>
+                        Content="💾 Salvează"
+                        Style="{StaticResource PaletteBtn}"
+                        Background="#455A64"
+                        Click="BtnSavePlan_Click"/>
 
                 <Button x:Name="BtnLoadPlan"
-        Content="📂 Încarcă"
-        Style="{StaticResource PaletteBtn}"
-        Background="#455A64"
-        Click="BtnLoadPlan_Click"/>
+                        Content="📂 Încarcă"
+                        Style="{StaticResource PaletteBtn}"
+                        Background="#455A64"
+                        Click="BtnLoadPlan_Click"/>
 
             </WrapPanel>
         </Border>
 
-        <!-- Canvas + Legendă -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Canvas principal -->
             <Border Grid.Column="0"
                     Background="#1C2730"
                     BorderBrush="#2A3A4A"
@@ -186,7 +175,6 @@
                         ClipToBounds="True"/>
             </Border>
 
-            <!-- Legendă -->
             <Border Grid.Column="1"
                     Background="#202B35"
                     Padding="12"
@@ -198,63 +186,18 @@
                                Foreground="White"
                                Margin="0,0,0,8"
                                HorizontalAlignment="Center"/>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3">
-                        <Ellipse Width="14" Height="14" Fill="#4CAF50" Margin="0,0,6,0"/>
-                        <TextBlock Text="Start" Foreground="White" FontSize="11" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3">
-                        <Ellipse Width="14" Height="14" Fill="#FF9800" Margin="0,0,6,0"/>
-                        <TextBlock Text="Ieșire evacuare" Foreground="White" FontSize="11" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3">
-                        <Ellipse Width="14" Height="14" Fill="#607D8B" Margin="0,0,6,0"/>
-                        <TextBlock Text="Ușă internă" Foreground="White" FontSize="11" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3">
-                        <Ellipse Width="14" Height="14" Fill="#2196F3" Margin="0,0,6,0"/>
-                        <TextBlock Text="Scări" Foreground="White" FontSize="11" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3">
-                        <Ellipse Width="14" Height="14" Fill="#9C27B0" Margin="0,0,6,0"/>
-                        <TextBlock Text="Lift" Foreground="White" FontSize="11" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <Separator Margin="0,6" Background="#3A4A5A"/>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3">
-                        <Rectangle Width="18" Height="3" Fill="#64B4FF" Margin="0,5,6,0"/>
-                        <TextBlock Text="Hol" Foreground="White" FontSize="11" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,3">
-                        <Rectangle Width="18" Height="4" Fill="Red" Margin="0,5,6,0"/>
-                        <TextBlock Text="Drum optim" Foreground="#FF6060" FontSize="11"
-                                   FontWeight="Bold" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <Separator Margin="0,6" Background="#3A4A5A"/>
-
-                    <TextBlock Text="💡 Cum folosești:"
-                               Foreground="#78909C"
-                               FontSize="10"
-                               Margin="0,0,0,4"/>
                     <TextBlock Text="1. Adaugă elementele"
-                               Foreground="#546E7A" FontSize="10" TextWrapping="Wrap" Margin="0,2"/>
+                               Foreground="#546E7A" FontSize="14" TextWrapping="Wrap" Margin="0,2"/>
                     <TextBlock Text="2. Trage să le poziționezi"
-                               Foreground="#546E7A" FontSize="10" TextWrapping="Wrap" Margin="0,2"/>
-                    <TextBlock Text="3. Activează 🔗 și conectează noduri"
-                               Foreground="#546E7A" FontSize="10" TextWrapping="Wrap" Margin="0,2"/>
-                    <TextBlock Text="4. Setează parametrii (dreapta)"
-                               Foreground="#546E7A" FontSize="10" TextWrapping="Wrap" Margin="0,2"/>
-                    <TextBlock Text="5. Apasă ⚡ Construiește Graf"
-                               Foreground="#546E7A" FontSize="10" TextWrapping="Wrap" Margin="0,2"/>
+                               Foreground="#546E7A" FontSize="14" TextWrapping="Wrap" Margin="0,2"/>
+                    <TextBlock Text="3. Activează 🔗 și conectează elementele"
+                               Foreground="#546E7A" FontSize="14" TextWrapping="Wrap" Margin="0,2"/>
+                    <TextBlock Text="4. Setează pentru fiecare hol o capacitate și un timp de traversare"
+                               Foreground="#546E7A" FontSize="14" TextWrapping="Wrap" Margin="0,2"/>
+                    <TextBlock Text="5. Apasă „Simulează evacuarea” și introdu parametrii ceruți"
+                               Foreground="#546E7A" FontSize="14" TextWrapping="Wrap" Margin="0,2"/>
                     <TextBlock Text="Click dreapta = opțiuni nod"
-                               Foreground="#546E7A" FontSize="10" TextWrapping="Wrap" Margin="0,6,0,0"
+                               Foreground="#546E7A" FontSize="14" TextWrapping="Wrap" Margin="0,6,0,0"
                                FontStyle="Italic"/>
                 </StackPanel>
             </Border>

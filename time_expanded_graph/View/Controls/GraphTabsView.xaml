@@ -4,19 +4,13 @@
              xmlns:local="clr-namespace:time_expanded_graph.View.Controls">
 
     <TabControl Background="#2C3943">
-
-        <!-- TAB 1: Plan Clădire (NOU) -->
         <TabItem Header="Plan Clădire">
             <local:BuildingPlanView x:Name="BuildingPlan"/>
         </TabItem>
-
-        <!-- TAB 2: Graf original (debug) -->
         <TabItem Header="Graf original">
             <Canvas x:Name="OriginalGraphCanvas"
                     Background="#202B33"/>
         </TabItem>
-
-        <!-- TAB 3: Time-expanded -->
         <TabItem Header="Time-expanded">
             <ScrollViewer HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
@@ -26,8 +20,6 @@
                 Background="#202B33"/>
             </ScrollViewer>
         </TabItem>
-
-        <!-- TAB 4: Dinic -->
         <TabItem Header="Dinic">
             <ScrollViewer HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
@@ -37,28 +29,23 @@
                 Background="#202B33"/>
             </ScrollViewer>
         </TabItem>
-
-        <!-- TAB 5: Push-Relabel -->
         <TabItem Header="Push-Relabel">
             <ScrollViewer HorizontalScrollBarVisibility="Auto"
-          VerticalScrollBarVisibility="Auto">
+                    VerticalScrollBarVisibility="Auto">
                 <Canvas x:Name="PushRelabelGraphCanvas"
-        Width="1600"
-        Height="1000"
-        Background="#202B33"/>
+                Width="1600"
+                Height="1000"
+                Background="#202B33"/>
             </ScrollViewer>
         </TabItem>
-
-        <!-- TAB 6: Edmonds-Karp -->
         <TabItem Header="Edmonds-Karp">
             <ScrollViewer HorizontalScrollBarVisibility="Auto"
-  VerticalScrollBarVisibility="Auto">
+                VerticalScrollBarVisibility="Auto">
                 <Canvas x:Name="EdmondsKarpGraphCanvas"
-Width="1600"
-Height="1000"
-Background="#202B33"/>
+                 Width="1600"
+                 Height="1000"
+                 Background="#202B33"/>
             </ScrollViewer>
         </TabItem>
-
     </TabControl>
 </UserControl>

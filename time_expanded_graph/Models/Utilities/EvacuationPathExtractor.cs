@@ -4,20 +4,8 @@ using time_expanded_graph.Models.Graphs;
 
 namespace time_expanded_graph.Models.Utilities
 {
-    /// <summary>
-    /// Extrage drumul de evacuare optim (pe graful simplu) din rezultatele
-    /// algoritmului de flux maxim pe graful time-expanded.
-    /// 
-    /// Strategia: din muchiile cu flux > 0 în graful extins, reconstruim
-    /// secvența de noduri originale (fără indicii de timp) care formează
-    /// cel mai scurt drum de la sursă la sink.
-    /// </summary>
     public static class EvacuationPathExtractor
     {
-        /// <summary>
-        /// Returnează lista de ID-uri de noduri originale (ex: "D_1", "SC_2", "EXIT_1")
-        /// care formează drumul principal de evacuare.
-        /// </summary>
         public static List<string> ExtractPath(
             List<(int from, FlowEdge edge)> flowEdges,
             Dictionary<int, string> indexToNode,
@@ -26,7 +14,6 @@ namespace time_expanded_graph.Models.Utilities
             if (flowEdges == null || indexToNode == null || simpleGraph == null)
                 return new List<string>();
 
-            // Construim un graf de adiacență pe nodurile originale, bazat pe muchii cu flux
             var adjacency = new Dictionary<string, HashSet<string>>();
 
             foreach (var (fromIdx, edge) in flowEdges)
@@ -38,15 +25,13 @@ namespace time_expanded_graph.Models.Utilities
                 string fromExpanded = indexToNode[fromIdx];
                 string toExpanded = indexToNode[edge.To];
 
-                // Ignorăm nodurile virtuale S* / T*
                 if (fromExpanded == "S*" || toExpanded == "T*") continue;
                 if (fromExpanded == "S*_virtual" || toExpanded == "T*_virtual") continue;
 
-                // Extragem nodul original (eliminăm sufixul _t)
                 string fromOrig = StripTimeIndex(fromExpanded);
                 string toOrig = StripTimeIndex(toExpanded);
 
-                if (fromOrig == toOrig) continue; // Muchie de așteptare holdover, ignorăm
+                if (fromOrig == toOrig) continue; 
 
                 if (!adjacency.ContainsKey(fromOrig))
                     adjacency[fromOrig] = new HashSet<string>();
@@ -57,7 +42,6 @@ namespace time_expanded_graph.Models.Utilities
             if (adjacency.Count == 0)
                 return new List<string>();
 
-            // BFS pe graful original pentru cel mai scurt drum
             string source = simpleGraph.SourceNode;
             string sink = simpleGraph.SinkNode;
 
@@ -109,7 +93,7 @@ namespace time_expanded_graph.Models.Utilities
                 }
             }
 
-            return new List<string>(); // Nu s-a găsit drum
+            return new List<string>();
         }
 
         private static List<string> ReconstructPath(

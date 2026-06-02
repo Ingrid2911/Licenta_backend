@@ -31,7 +31,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             int index = 0;
 
-            // 🔥 colectează TOATE nodurile din muchii
             var allNodes = new HashSet<string>();
 
             foreach (var edge in eg.ExpandedEdges)
@@ -40,18 +39,15 @@ namespace time_expanded_graph.Models.Algorithms
                 allNodes.Add(edge.To);
             }
 
-            // adaugă și super source / sink (siguranță)
             allNodes.Add(eg.SuperSource);
             allNodes.Add(eg.SuperSink);
 
-            // mapare
             foreach (var node in allNodes)
             {
                 nodeIndex[node] = index++;
                 graph.Add(new List<FlowEdge>());
             }
 
-            // adaugă muchii
             foreach (var edge in eg.ExpandedEdges)
             {
                 int u = nodeIndex[edge.From];
@@ -60,7 +56,6 @@ namespace time_expanded_graph.Models.Algorithms
                 AddEdge(u, v, edge.Capacity);
             }
         }
-
         private void AddEdge(int from, int to, int capacity)
         {
             var forward = new FlowEdge(to, capacity);
@@ -72,7 +67,6 @@ namespace time_expanded_graph.Models.Algorithms
             graph[from].Add(forward);
             graph[to].Add(backward);
         }
-
         private int BFS(int s, int t, int[] parent, FlowEdge[] parentEdge)
         {
             Array.Fill(parent, -1);
@@ -104,7 +98,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             return 0;
         }
-
         private int EdmondsKarp(int s, int t)
         {
             int flow = 0;
@@ -149,7 +142,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             return result;
         }
-
         public Dictionary<int, string> GetIndexToNodeMap()
         {
             return nodeIndex.ToDictionary(x => x.Value, x => x.Key);

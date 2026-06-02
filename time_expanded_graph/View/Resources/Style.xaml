@@ -32,7 +32,6 @@
 		</Setter>
 	</Style>
 
-	<!-- Stil pentru containerul tab-urilor -->
 	<Style TargetType="TabControl">
 		<Setter Property="Background" Value="#2C3943"/>
 		<Setter Property="BorderThickness" Value="0"/>
@@ -64,7 +63,6 @@
 		</Setter>
 	</Style>
 
-	<!-- Stil pentru fiecare tab -->
 	<Style TargetType="TabItem">
 		<Setter Property="Foreground" Value="#A0A0A0"/>
 		<Setter Property="Background" Value="#2C3943"/>

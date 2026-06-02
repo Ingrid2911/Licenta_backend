@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -11,28 +8,11 @@ using time_expanded_graph.View.Dialogs;
 
 namespace time_expanded_graph.View.Drawing.FloorPlan
 {
-    /// <summary>
-    /// Renderer arhitectural pentru planul clădirii.
-    ///
-    /// Fiecare tip de element are simbolul său standard:
-    ///   Room       → dreptunghi cu pereți groși + haşură ușoară + etichetă
-    ///   Door       → deschidere în perete + arc 90° (foaia ușii)
-    ///   Stairs     → dreptunghi gri cu linii paralele (trepte) + săgeată
-    ///   Elevator   → dreptunghi albastru cu X în interior
-    ///   ExitDoor   → dreptunghi portocaliu EXIT + săgeată
-    ///   StartPoint → cerc verde cu S
-    ///
-    /// Conexiunile (holuri) sunt linii punctate între centrele elementelor.
-    /// Ruta optimă este evidențiată cu verde închis, linie continuă.
-    /// </summary>
     public class FloorPlanDrawing
     {
-        // ─── Constante vizuale ────────────────────────────────────────────────────
-        private const double WallThick = 5.0;   // grosimea peretelui camerei
-        private const double HitPadding = 12.0;  // zona click în jurul elementului
-        private const double StairsStep = 12.0;  // distanța dintre trepte
+        private const double WallThick = 5.0;   
+        private const double StairsStep = 12.0; 
 
-        // Culori arhitecturale
         private static readonly SolidColorBrush WallBrush = new(Color.FromRgb(44, 44, 42));
         private static readonly SolidColorBrush StairFill = new(Color.FromRgb(211, 209, 199));
         private static readonly SolidColorBrush StairLine = new(Color.FromRgb(136, 135, 128));
@@ -44,14 +24,13 @@ namespace time_expanded_graph.View.Drawing.FloorPlan
         private static readonly SolidColorBrush PathLine = new(Color.FromRgb(56, 142, 60));
         private static readonly SolidColorBrush PathNode = new(Color.FromRgb(200, 30, 30));
 
-        // Room fill colors (ciclate pe index)
         private static readonly Color[] RoomColors =
         {
-            Color.FromArgb(60,  99, 153, 34),   // verde
-            Color.FromArgb(60,  33, 150, 243),  // albastru
-            Color.FromArgb(60, 156, 39, 176),   // mov
-            Color.FromArgb(60, 255, 152, 0),    // portocaliu
-            Color.FromArgb(60, 121, 85, 72),    // maro
+            Color.FromArgb(60,  99, 153, 34),   
+            Color.FromArgb(60,  33, 150, 243),  
+            Color.FromArgb(60, 156, 39, 176),   
+            Color.FromArgb(60, 255, 152, 0),    
+            Color.FromArgb(60, 121, 85, 72),    
         };
 
         private readonly Canvas _canvas;

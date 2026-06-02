@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.RightsManagement;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace time_expanded_graph.Models.Graphs
+﻿namespace time_expanded_graph.Models.Graphs
 {
     public class ExpandedGraph
     {
@@ -14,12 +7,10 @@ namespace time_expanded_graph.Models.Graphs
         public List<ExpandedEdge> ExpandedEdges { get; private set; }
         public string SuperSource { get; private set; } //ex:S*
         public string SuperSink { get; private set; }
-
         public int TimeHorizon
         {
             get; private set;
         }
-
         //methods
         public ExpandedGraph(HashSet<string> expandedNodes, List<ExpandedEdge> expandedEdges, string superSource, string superSink, int timeHorizon ) {
             ExpandedNodes = expandedNodes;

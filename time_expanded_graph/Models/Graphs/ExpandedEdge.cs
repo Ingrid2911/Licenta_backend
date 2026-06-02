@@ -8,14 +8,10 @@ namespace time_expanded_graph.Models.Graphs
    
     public class ExpandedEdge
     {
-        //properties
         public string From { get; private set; } //conventie: nod_original + "_" + timp
         public string To { get; private set; }
         public int Capacity { get; private set; }
-
-        //nu mai avem timp, el este deja in nume ex: a_3
-        public ExpandedEdgeType Type { get; private set; } // 🔥 IMPORTANT
-
+        public ExpandedEdgeType Type { get; private set; } 
         public ExpandedEdge(string from, string to, int capacity, ExpandedEdgeType type)
         {
             From = from;

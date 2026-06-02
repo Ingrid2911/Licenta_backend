@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace time_expanded_graph.Models.Graphs
 {
-    public class SimpleEdge //pe viitor s-ar putea sa il schimb in public
+    public class SimpleEdge 
     {
         //properties
         public string From { get; private set; }

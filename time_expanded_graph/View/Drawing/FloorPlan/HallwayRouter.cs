@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using time_expanded_graph.Models.Building;
 
 namespace time_expanded_graph.View.Drawing.FloorPlan
@@ -15,7 +13,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan
             bool almostSameY = Math.Abs(fromCenter.Y - toCenter.Y) < 40;
             bool almostSameX = Math.Abs(fromCenter.X - toCenter.X) < 40;
 
-            // Caz 1: camere una lângă alta pe orizontală
             if (almostSameY)
             {
                 Point start = GetPointOnElementBorder(from, toCenter);
@@ -28,7 +25,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan
                 };
             }
 
-            // Caz 2: camere una sub alta / una deasupra celeilalte
             if (almostSameX)
             {
                 Point start = GetPointOnElementBorder(from, toCenter);
@@ -41,7 +37,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan
                 };
             }
 
-            // Caz 3: camere pe diagonală -> traseu în L
             Point corner = new Point(toCenter.X, fromCenter.Y);
 
             Point startL = GetPointOnElementBorder(from, corner);

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -12,18 +9,13 @@ namespace time_expanded_graph.View.Drawing
     internal class SimpleGraphDrawing
     {
         private const double NodeRadius = 20;
-
         public void Draw(SimpleGraph graph, Canvas canvas)
         {
             canvas.Children.Clear();
-
             if (graph.Nodes.Count == 0)
                 return;
-
-            // 🔵 Layout pe niveluri, similar grafului extins
             var nodePositions = GenerateLinearLayout(graph, canvas);
 
-            // 1️⃣ Muchii
             foreach (var edge in graph.Edges)
             {
                 if (!nodePositions.ContainsKey(edge.From) ||
@@ -45,7 +37,6 @@ namespace time_expanded_graph.View.Drawing
 
                 canvas.Children.Add(line);
 
-                // Capacitate
                 TextBlock capLabel = new TextBlock
                 {
                     Text = edge.Capacity.ToString(),
@@ -63,7 +54,6 @@ namespace time_expanded_graph.View.Drawing
                 canvas.Children.Add(capLabel);
             }
 
-            // 2️⃣ Noduri
             foreach (var node in graph.Nodes)
             {
                 if (!nodePositions.ContainsKey(node))
@@ -121,7 +111,6 @@ namespace time_expanded_graph.View.Drawing
                 .OrderBy(n => n)
                 .ToList();
 
-            // 🔵 Construim niveluri pe baza muchiilor
             var levels = new Dictionary<string, int>();
             levels[graph.SourceNode] = 0;
 
@@ -142,11 +131,9 @@ namespace time_expanded_graph.View.Drawing
                 }
             }
 
-            // Sink pe ultimul nivel
             int maxLevel = levels.Values.Max();
             levels[graph.SinkNode] = maxLevel;
 
-            // Grupăm nodurile pe nivel
             var groupedLevels = levels
                 .GroupBy(kvp => kvp.Value)
                 .OrderBy(g => g.Key)

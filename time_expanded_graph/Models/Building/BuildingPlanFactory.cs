@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using time_expanded_graph.Models.Graphs;
 
 namespace time_expanded_graph.Models.Building
@@ -12,7 +9,6 @@ namespace time_expanded_graph.Models.Building
         private const double StartY = 320;
         private const double ColumnSpacing = 260;
         private const double RowSpacing = 170;
-
         public static BuildingPlan FromSimpleGraph(SimpleGraph graph)
         {
             var plan = new BuildingPlan();
@@ -27,7 +23,6 @@ namespace time_expanded_graph.Models.Building
 
             return plan;
         }
-
         private static Dictionary<string, int> ComputeNodeLevels(SimpleGraph graph)
         {
             var levels = new Dictionary<string, int>();
@@ -85,7 +80,6 @@ namespace time_expanded_graph.Models.Building
 
             return levels;
         }
-
         private static void CreateElements(
             BuildingPlan plan,
             SimpleGraph graph,
@@ -129,7 +123,6 @@ namespace time_expanded_graph.Models.Building
                 }
             }
         }
-
         private static void CreateConnections(BuildingPlan plan, SimpleGraph graph)
         {
             var existingNodes = plan.Elements
@@ -177,7 +170,6 @@ namespace time_expanded_graph.Models.Building
                     added.Add(reverseKey);
             }
         }
-
         private static BuildingElementType GetElementType(string nodeId, SimpleGraph graph)
         {
             if (nodeId == graph.SourceNode ||
@@ -210,7 +202,6 @@ namespace time_expanded_graph.Models.Building
 
             return BuildingElementType.Room;
         }
-
         private static string GetElementLabel(
             string nodeId,
             SimpleGraph graph,
@@ -230,7 +221,6 @@ namespace time_expanded_graph.Models.Building
 
             return $"Camera {nodeId.ToUpper()}";
         }
-
         private static int GetNodeVisualPriority(string nodeId, SimpleGraph graph)
         {
             if (nodeId == graph.SourceNode)

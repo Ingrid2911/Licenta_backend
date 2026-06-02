@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using time_expanded_graph.Models.Graphs;
 
 namespace time_expanded_graph.Models.Building
@@ -9,7 +7,6 @@ namespace time_expanded_graph.Models.Building
     {
         public List<BuildingElement> Elements { get; } = new();
         public List<HallwayConnection> Connections { get; } = new();
-
         public void AddElement(BuildingElement el) => Elements.Add(el);
         public void AddConnection(HallwayConnection c) => Connections.Add(c);
 
@@ -27,8 +24,6 @@ namespace time_expanded_graph.Models.Building
             Connections.Clear();
             BuildingElement.ResetCounter();
         }
-
-        // ─── Conversie la SimpleGraph ─────────────────────────────────────────────
 
         public (SimpleGraph? graph, string? error) ToSimpleGraph()
         {
@@ -89,7 +84,6 @@ namespace time_expanded_graph.Models.Building
             return el?.Center;
         }
     }
-
     public class HallwayConnection
     {
         public string FromId { get; set; }
@@ -97,7 +91,6 @@ namespace time_expanded_graph.Models.Building
         public int Capacity { get; set; } = 5;
         public int TravelTime { get; set; } = 1;
         public bool IsBidirectional { get; set; } = true;
-
         public HallwayConnection(string fromId, string toId,
                                  int cap = 5, int travel = 1, bool bidir = true)
         {

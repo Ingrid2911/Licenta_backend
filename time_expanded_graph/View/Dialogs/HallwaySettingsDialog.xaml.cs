@@ -6,12 +6,10 @@ namespace time_expanded_graph.View.Dialogs
     {
         public int Capacity { get; private set; }
         public int TravelTime { get; private set; }
-
         public HallwaySettingsDialog()
         {
             InitializeComponent();
         }
-
         private void Ok_Click(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(CapacityBox.Text, out int capacity) || capacity <= 0)
@@ -32,7 +30,6 @@ namespace time_expanded_graph.View.Dialogs
             DialogResult = true;
             Close();
         }
-
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;

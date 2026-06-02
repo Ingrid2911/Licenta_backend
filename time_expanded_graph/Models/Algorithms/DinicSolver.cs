@@ -25,7 +25,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             return Dinic(s, t);
         }
-
         private void BuildGraph(ExpandedGraph eg)
         {
             nodeIndex = new Dictionary<string, int>();
@@ -54,7 +53,6 @@ namespace time_expanded_graph.Models.Algorithms
                 AddEdge(nodeIndex[edge.From], nodeIndex[edge.To], edge.Capacity);
             }
         }
-
         private void AddEdge(int from, int to, int capacity)
         {
             var forward = new FlowEdge(to, capacity);
@@ -66,7 +64,6 @@ namespace time_expanded_graph.Models.Algorithms
             graph[from].Add(forward);
             graph[to].Add(backward);
         }
-
         private bool BFS(int s, int t)
         {
             Array.Fill(level, -1);
@@ -91,7 +88,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             return level[t] != -1;
         }
-
         private int DFS(int v, int t, int pushed)
         {
             if (pushed == 0) return 0;
@@ -116,7 +112,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             return 0;
         }
-
         private int Dinic(int s, int t)
         {
             int flow = 0;

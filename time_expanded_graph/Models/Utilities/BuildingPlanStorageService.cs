@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows;
@@ -18,7 +16,6 @@ namespace time_expanded_graph.Services
                 new JsonStringEnumConverter()
             }
         };
-
         public static void Save(BuildingPlan plan, string path)
         {
             if (plan == null)
@@ -33,7 +30,6 @@ namespace time_expanded_graph.Services
 
             File.WriteAllText(path, json);
         }
-
         public static BuildingPlan Load(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
@@ -51,7 +47,6 @@ namespace time_expanded_graph.Services
 
             return FromDto(dto);
         }
-
         private static BuildingPlanDto ToDto(BuildingPlan plan)
         {
             return new BuildingPlanDto
@@ -81,7 +76,6 @@ namespace time_expanded_graph.Services
                 }).ToList()
             };
         }
-
         private static BuildingPlan FromDto(BuildingPlanDto dto)
         {
             var plan = new BuildingPlan();

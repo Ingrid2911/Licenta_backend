@@ -32,8 +32,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             return PushRelabel();
         }
-
-        // 🔹 Build graph
         private void BuildGraph(ExpandedGraph eg)
         {
             nodeIndex = new Dictionary<string, int>();
@@ -62,7 +60,6 @@ namespace time_expanded_graph.Models.Algorithms
                 AddEdge(nodeIndex[e.From], nodeIndex[e.To], e.Capacity);
             }
         }
-
         private void AddEdge(int from, int to, int capacity)
         {
             var f = new FlowEdge(to, capacity);
@@ -75,7 +72,6 @@ namespace time_expanded_graph.Models.Algorithms
             graph[to].Add(r);
         }
 
-        // 🔹 MAIN
         private int PushRelabel()
         {
             int n = graph.Count;
@@ -90,7 +86,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             height[source] = n;
 
-            // 🔥 preflow
             foreach (var e in graph[source])
             {
                 int flow = e.Capacity;
@@ -120,8 +115,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             return excess[sink];
         }
-
-        // 🔹 discharge
         private void Discharge(int u)
         {
             while (excess[u] > 0)
@@ -147,8 +140,6 @@ namespace time_expanded_graph.Models.Algorithms
                 }
             }
         }
-
-        // 🔹 push
         private void Push(int u, FlowEdge e)
         {
             int send = Math.Min(excess[u], e.ResidualCapacity());
@@ -163,8 +154,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             Enqueue(e.To);
         }
-
-        // 🔹 relabel
         private void Relabel(int u)
         {
             int min = int.MaxValue;
@@ -178,8 +167,6 @@ namespace time_expanded_graph.Models.Algorithms
             if (min < int.MaxValue)
                 height[u] = min + 1;
         }
-
-        // 🔹 global relabel
         private void GlobalRelabel()
         {
             Array.Fill(height, int.MaxValue);
@@ -204,7 +191,6 @@ namespace time_expanded_graph.Models.Algorithms
                 }
             }
         }
-
         private void Enqueue(int v)
         {
             if (!active[v] && excess[v] > 0 && v != source && v != sink)
@@ -213,8 +199,6 @@ namespace time_expanded_graph.Models.Algorithms
                 activeNodes.Enqueue(v);
             }
         }
-
-
         public List<(int from, FlowEdge edge)> GetAllEdges()
         {
             var result = new List<(int, FlowEdge)>();
@@ -230,7 +214,6 @@ namespace time_expanded_graph.Models.Algorithms
 
             return result;
         }
-
         public Dictionary<int, string> GetIndexToNodeMap()
         {
             return nodeIndex.ToDictionary(x => x.Value, x => x.Key);

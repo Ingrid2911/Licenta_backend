@@ -7,7 +7,6 @@ using time_expanded_graph.Models.Graphs;
 
 namespace time_expanded_graph.Models.Builders
 {
-
     internal class TimeExpandedGraphBuilder
     {
         public ExpandedGraph BuildTimeExpandedGraph(SimpleGraph simpleGraph, int H)
@@ -17,10 +16,9 @@ namespace time_expanded_graph.Models.Builders
 
             const string SuperSource = "S*";
             const string SuperSink = "T*";
-            const int WAIT_CAPACITY = 10; //modificat
+            const int WAIT_CAPACITY = 10; 
             const int INF = 1000;
 
-            // 🔹 1. Creează nodurile pentru fiecare timp
             foreach (string node in simpleGraph.Nodes)
             {
                 for (int t = 0; t <= H; t++)
@@ -30,7 +28,6 @@ namespace time_expanded_graph.Models.Builders
                 }
             }
 
-            // 🔹 2. Muchii de așteptare (holdover)
             foreach (string node in simpleGraph.Nodes)
             {
                 for (int t = 0; t < H; t++)
@@ -42,7 +39,6 @@ namespace time_expanded_graph.Models.Builders
                 }
             }
 
-            // 🔹 3. Muchii de mișcare
             foreach (SimpleEdge edge in simpleGraph.Edges)
             {
                 for (int t = 0; t + edge.TravelTime <= H; t++)
@@ -54,24 +50,20 @@ namespace time_expanded_graph.Models.Builders
                 }
             }
 
-            // 🔹 4. SuperSource și SuperSink
             FinalNodes.Add(SuperSource);
             FinalNodes.Add(SuperSink);
 
             string source = simpleGraph.SourceNode;
             string sink = simpleGraph.SinkNode;
 
-            // ✔️ FIX CRITIC: doar la t = 0
             FinalEdges.Add(new ExpandedEdge(SuperSource, source + "_0", INF, ExpandedEdgeType.Movement));
 
-            // ✔️ sink conectat pe toate timpii
             for (int t = 0; t <= H; t++)
             {
                 string from = sink + "_" + t;
                 FinalEdges.Add(new ExpandedEdge(from, SuperSink, INF, ExpandedEdgeType.Movement));
             }
 
-            // 🔹 5. Creează graful final
             ExpandedGraph finalGraph = new ExpandedGraph(
                 FinalNodes,
                 FinalEdges,
