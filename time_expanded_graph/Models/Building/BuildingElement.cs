@@ -43,7 +43,6 @@ namespace time_expanded_graph.Models.Building
         private static string TypePrefix(BuildingElementType t) => t switch
         {
             BuildingElementType.Room => "CAM",
-            BuildingElementType.Door => "U",
             BuildingElementType.Stairs => "SC",
             BuildingElementType.Elevator => "LF",
             BuildingElementType.ExitDoor => "EXIT",
@@ -58,14 +57,12 @@ namespace time_expanded_graph.Models.Building
             BuildingElementType.Elevator => "Lift",
             BuildingElementType.ExitDoor => "Iesire",
             BuildingElementType.StartPoint => "Start",
-            BuildingElementType.Door => $"Usa {n}",
             _ => $"El {n}"
         };
 
         private static double DefaultWidth(BuildingElementType t) => t switch
         {
             BuildingElementType.Room => 160,
-            BuildingElementType.Door => 48,
             BuildingElementType.Stairs => 80,
             BuildingElementType.Elevator => 60,
             BuildingElementType.ExitDoor => 48,
@@ -76,7 +73,6 @@ namespace time_expanded_graph.Models.Building
         private static double DefaultHeight(BuildingElementType t) => t switch
         {
             BuildingElementType.Room => 120,
-            BuildingElementType.Door => 48,
             BuildingElementType.Stairs => 100,
             BuildingElementType.Elevator => 60,
             BuildingElementType.ExitDoor => 48,

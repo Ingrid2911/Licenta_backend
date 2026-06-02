@@ -83,14 +83,6 @@
                 BorderBrush="#3A4A5A"
                 BorderThickness="0,0,0,1">
             <WrapPanel Orientation="Horizontal">
-
-                <TextBlock Text="Plan Clădire"
-                           FontSize="14"
-                           FontWeight="Bold"
-                           Foreground="White"
-                           VerticalAlignment="Center"
-                           Margin="0,0,16,0"/>
-
                 <TextBlock Text="Adaugă:"
                            Foreground="#AAB8C2"
                            VerticalAlignment="Center"
@@ -102,14 +94,12 @@
                         Background="#2E7D32"
                         Click="BtnAddStart_Click"
                         ToolTip="Punct de start — sursa persoanelor"/>
-
-                <Button x:Name="BtnAddDoor"
-                        Content="🚪 Ușă"
+                <Button x:Name="BtnAddRoom"
+                        Content="▣ Cameră"
                         Style="{StaticResource PaletteBtn}"
-                        Background="#546E7A"
-                        Click="BtnAddDoor_Click"
-                        ToolTip="Ușă interioară"/>
-
+                        Background="#455A64"
+                        Click="BtnAddRoom_Click"
+                        ToolTip="Cameră / încăpere"/>
                 <Button x:Name="BtnAddStairs"
                         Content="⬆ Scări"
                         Style="{StaticResource PaletteBtn}"

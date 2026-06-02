@@ -37,8 +37,8 @@ namespace time_expanded_graph.View.Controls
         private void BtnAddStart_Click(object sender, RoutedEventArgs e)
             => AddElementAtAuto(BuildingElementType.StartPoint);
 
-        private void BtnAddDoor_Click(object sender, RoutedEventArgs e)
-            => AddElementAtAuto(BuildingElementType.Door);
+        private void BtnAddRoom_Click(object sender, RoutedEventArgs e)
+            => AddElementAtAuto(BuildingElementType.Room);
 
         private void BtnAddStairs_Click(object sender, RoutedEventArgs e)
             => AddElementAtAuto(BuildingElementType.Stairs);

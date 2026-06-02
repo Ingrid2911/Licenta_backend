@@ -28,14 +28,11 @@ namespace time_expanded_graph.View.Drawing
     {
         // ─── Constante vizuale ────────────────────────────────────────────────────
         private const double WallThick = 5.0;   // grosimea peretelui camerei
-        private const double DoorArcR = 44.0;  // raza arcului ușii
         private const double HitPadding = 12.0;  // zona click în jurul elementului
         private const double StairsStep = 12.0;  // distanța dintre trepte
 
         // Culori arhitecturale
         private static readonly SolidColorBrush WallBrush = new(Color.FromRgb(44, 44, 42));
-        private static readonly SolidColorBrush FloorBrush = new(Color.FromRgb(245, 243, 238));
-        private static readonly SolidColorBrush DoorBrush = new(Color.FromRgb(245, 243, 238)); // golul ușii
         private static readonly SolidColorBrush StairFill = new(Color.FromRgb(211, 209, 199));
         private static readonly SolidColorBrush StairLine = new(Color.FromRgb(136, 135, 128));
         private static readonly SolidColorBrush ElevFill = new(Color.FromRgb(181, 212, 244));
@@ -188,9 +185,6 @@ namespace time_expanded_graph.View.Drawing
                 case BuildingElementType.Room:
                     DrawRoom(el, roomColor);
                     break;
-                case BuildingElementType.Door:
-                    DrawDoor(el, false);
-                    break;
                 case BuildingElementType.ExitDoor:
                     DrawExitDoor(el);
                     break;
@@ -299,120 +293,6 @@ namespace time_expanded_graph.View.Drawing
             handle.MouseLeftButtonDown += (s, e) => OnResizeMouseDown(el, e);
             _canvas.Children.Add(handle);
         }
-
-        // ─── UȘĂ ─────────────────────────────────────────────────────────────────
-        // Usa se deseneaza in orientarea ei: are o pozitie si o directie (0=N,1=E,2=S,3=V)
-        // Implicit: usa cu arcul deschizandu-se spre dreapta-jos (orientare E)
-        private void DrawDoor(BuildingElement el, bool isExit)
-        {
-            double x = el.Position.X, y = el.Position.Y;
-            bool onPath = _optimalPath.Contains(el.Id);
-
-            Brush strokeBrush = onPath ? PathNode
-                : isExit ? ExitFill
-                : WallBrush;
-
-            // Fundalul (albul care "sterge" peretele) — creeza golul
-            var gap = new Rectangle
-            {
-                Width = el.Width,
-                Height = el.Height,
-                Fill = new SolidColorBrush(Color.FromRgb(28, 39, 48)),
-                IsHitTestVisible = false
-            };
-            Canvas.SetLeft(gap, x); Canvas.SetTop(gap, y);
-            Canvas.SetZIndex(gap, 5);
-            _canvas.Children.Add(gap);
-
-            // Linia-cadru a deschiderii
-            var frameLine = new Line
-            {
-                X1 = x,
-                Y1 = y,
-                X2 = x,
-                Y2 = y + el.Height,
-                Stroke = strokeBrush,
-                StrokeThickness = 2,
-                IsHitTestVisible = false
-            };
-            Canvas.SetZIndex(frameLine, 12);
-            _canvas.Children.Add(frameLine);
-
-            // Foaia ușii (linie diagonală la 45°)
-            double leafLen = Math.Min(el.Width, el.Height) * 0.9;
-            var leaf = new Line
-            {
-                X1 = x,
-                Y1 = y,
-                X2 = x + leafLen,
-                Y2 = y,
-                Stroke = strokeBrush,
-                StrokeThickness = 1.5,
-                IsHitTestVisible = false
-            };
-            Canvas.SetZIndex(leaf, 12);
-            _canvas.Children.Add(leaf);
-
-            // Arcul de 90°
-            double arcR = leafLen;
-            var arcGeom = new PathGeometry();
-            var arcFig = new PathFigure { StartPoint = new Point(x, y) };
-            arcFig.Segments.Add(new ArcSegment(
-                point: new Point(x + arcR, y + arcR),
-                size: new Size(arcR, arcR),
-                rotationAngle: 0,
-                isLargeArc: false,
-                sweepDirection: SweepDirection.Clockwise,
-                isStroked: true));
-            arcGeom.Figures.Add(arcFig);
-
-            var arcPath = new Path
-            {
-                Data = arcGeom,
-                Stroke = strokeBrush,
-                StrokeThickness = 1.2,
-                StrokeDashArray = new DoubleCollection { 4, 2 },
-                IsHitTestVisible = false
-            };
-            Canvas.SetZIndex(arcPath, 12);
-            _canvas.Children.Add(arcPath);
-
-            // Hitbox transparent pentru click
-            var hitbox = new Rectangle
-            {
-                Width = el.Width + HitPadding * 2,
-                Height = el.Height + HitPadding * 2,
-                Fill = Brushes.Transparent,
-                Cursor = Cursors.Hand,
-                Tag = el.Id
-            };
-            Canvas.SetLeft(hitbox, x - HitPadding);
-            Canvas.SetTop(hitbox, y - HitPadding);
-            Canvas.SetZIndex(hitbox, 15);
-            hitbox.MouseLeftButtonDown += (s, e) => OnElementMouseDown(el, e);
-            hitbox.MouseRightButtonDown += (s, e) => { ShowContextMenu(el); e.Handled = true; };
-            _canvas.Children.Add(hitbox);
-
-            // Etichetă mică sub ușă
-            string lbl = isExit ? "EXIT" : el.Id;
-            Brush lblColor = isExit
-                ? ExitFill
-                : new SolidColorBrush(Color.FromArgb(180, 200, 200, 180));
-
-            var tb = new TextBlock
-            {
-                Text = lbl,
-                FontSize = 9,
-                Foreground = lblColor,
-                IsHitTestVisible = false
-            };
-            tb.Measure(new Size(200, 200));
-            Canvas.SetLeft(tb, x - tb.DesiredSize.Width / 2 + el.Width / 2);
-            Canvas.SetTop(tb, y + el.Height + 2);
-            Canvas.SetZIndex(tb, 13);
-            _canvas.Children.Add(tb);
-        }
-
         // ─── UȘĂ EVACUARE ────────────────────────────────────────────────────────
         private void DrawExitDoor(BuildingElement el)
         {
@@ -664,77 +544,66 @@ namespace time_expanded_graph.View.Drawing
             if (fromEl == null || toEl == null) return;
 
             bool onPath = IsConnOnPath(conn);
-            Point p1 = fromEl.Center;
-            Point p2 = toEl.Center;
 
-            var line = new Line
-            {
-                X1 = p1.X,
-                Y1 = p1.Y,
-                X2 = p2.X,
-                Y2 = p2.Y,
-                Stroke = onPath ? PathLine : ConnLine,
-                StrokeThickness = onPath ? 3.5 : 1.8,
-                StrokeDashArray = onPath
-                    ? null
-                    : new DoubleCollection { 8, 4 },
-                IsHitTestVisible = false
-            };
-            Canvas.SetZIndex(line, 4);
-            _canvas.Children.Add(line);
+            // Traseu în formă de L: nu mai desenăm centru -> centru, ci margine -> cot -> margine.
+            List<Point> route = BuildLRouteBetweenElements(fromEl, toEl);
+            if (route.Count < 2) return;
 
-            // Etichetă cap/timp la mijloc
-            double mx = (p1.X + p2.X) / 2 + 4;
-            double my = (p1.Y + p2.Y) / 2 - 10;
-            var lbl = new TextBlock
-            {
-                Text = $"c:{conn.Capacity} t:{conn.TravelTime}",
-                FontSize = 9,
-                Foreground = onPath
-                    ? PathLine
-                    : new SolidColorBrush(Color.FromArgb(180, 200, 220, 255)),
-                IsHitTestVisible = false
-            };
-            Canvas.SetLeft(lbl, mx); Canvas.SetTop(lbl, my);
-            Canvas.SetZIndex(lbl, 5);
-            _canvas.Children.Add(lbl);
+            // Grosimea holului este calculată din înălțimea camerei.
+            // Dacă ambele sunt camere, folosim înălțimea mai mică, ca să nu iasă disproporționat.
+            double hallwayThickness = GetHallwayThickness(fromEl, toEl);
+
+            // Corpul holului. Este desenat sub camere, iar camerele îl acoperă la capete,
+            // deci pare că intră exact din marginea camerei.
+            DrawPolylinePath(
+                route,
+                onPath
+                    ? new SolidColorBrush(Color.FromArgb(210, 56, 142, 60))
+                    : new SolidColorBrush(Color.FromArgb(110, 100, 160, 230)),
+                hallwayThickness,
+                zIndex: onPath ? 6 : 3,
+                dashed: false,
+                opacity: onPath ? 0.95 : 0.75);
+
+            // Linie centrală subțire, doar ca să se vadă direcția/conexiunea în mijlocul holului.
+            DrawPolylinePath(
+                route,
+                onPath ? PathLine : ConnLine,
+                onPath ? 3.0 : 1.8,
+                zIndex: onPath ? 7 : 4,
+                dashed: !onPath,
+                opacity: 1.0);
+
+            // Etichetă cap/timp pe segmentul din mijloc.
+            DrawConnectionLabel(route, $"c:{conn.Capacity} t:{conn.TravelTime}", onPath);
         }
 
         // ─── RUTA OPTIMĂ ─────────────────────────────────────────────────────────
         private void DrawOptimalPath()
         {
-            var pts = new List<Point>();
+            // Holurile de pe ruta optimă sunt deja colorate în DrawConnection(),
+            // deoarece DrawConnection() verifică IsConnOnPath(conn).
+            // Aici desenăm doar săgeți și puncte mici peste elemente, ca să nu acoperim camerele
+            // cu un hol verde foarte gros.
+            var elements = new List<BuildingElement>();
             foreach (var id in _optimalPath)
             {
                 var el = _plan.Elements.FirstOrDefault(e => e.Id == id);
-                if (el != null) pts.Add(el.Center);
+                if (el != null) elements.Add(el);
             }
-            if (pts.Count < 2) return;
+            if (elements.Count < 2) return;
 
-            // Linie continuă verde
-            for (int i = 0; i < pts.Count - 1; i++)
+            // Săgeți pe fiecare segment al traseului în L.
+            for (int i = 0; i < elements.Count - 1; i++)
             {
-                var l = new Line
-                {
-                    X1 = pts[i].X,
-                    Y1 = pts[i].Y,
-                    X2 = pts[i + 1].X,
-                    Y2 = pts[i + 1].Y,
-                    Stroke = PathLine,
-                    StrokeThickness = 4,
-                    IsHitTestVisible = false
-                };
-                Canvas.SetZIndex(l, 50);
-                _canvas.Children.Add(l);
-
-                // Săgeată la fiecare segment
-                DrawArrow(pts[i].X, pts[i].Y, pts[i + 1].X, pts[i + 1].Y,
-                          PathLine, 3, zIndex: 51, arrowOnly: true);
+                List<Point> route = BuildLRouteBetweenElements(elements[i], elements[i + 1]);
+                DrawArrowOnRoute(route, PathLine, zIndex: 51);
             }
 
-            // Cercuri pe noduri
-            foreach (var p in pts)
+            // Cercuri pe noduri.
+            foreach (var el in elements)
             {
+                Point p = el.Center;
                 var c = new Ellipse
                 {
                     Width = 12,
@@ -811,6 +680,194 @@ namespace time_expanded_graph.View.Drawing
                 Canvas.SetLeft(ttb, lx + 30); Canvas.SetTop(ttb, iy + 1);
                 Canvas.SetZIndex(ttb, 91);
                 _canvas.Children.Add(ttb);
+            }
+        }
+
+        // ─── Helpers pentru holuri în formă de L ──────────────────────────────────────
+        private List<Point> BuildLRouteBetweenElements(BuildingElement fromEl, BuildingElement toEl)
+        {
+            Point fromCenter = fromEl.Center;
+            Point toCenter = toEl.Center;
+
+            Point start = GetBorderPointToward(fromEl, toCenter);
+            Point end = GetBorderPointToward(toEl, fromCenter);
+
+            return BuildLRoute(start, end);
+        }
+
+        private List<Point> BuildLRoute(Point start, Point end)
+        {
+            var points = new List<Point> { start };
+
+            double dx = Math.Abs(end.X - start.X);
+            double dy = Math.Abs(end.Y - start.Y);
+
+            // Dacă sunt deja pe aceeași orizontală sau verticală, desenăm direct.
+            if (dx < 0.001 || dy < 0.001)
+            {
+                points.Add(end);
+                return points;
+            }
+
+            // Traseu simplu în formă de L: start -> un singur cot -> end.
+            // Dacă distanța pe X este mai mare, mergem întâi orizontal, apoi vertical.
+            // Dacă distanța pe Y este mai mare, mergem întâi vertical, apoi orizontal.
+            Point corner = dx >= dy
+                ? new Point(end.X, start.Y)   // orizontal, apoi vertical
+                : new Point(start.X, end.Y);  // vertical, apoi orizontal
+
+            points.Add(corner);
+            points.Add(end);
+            return points;
+        }
+
+        private Point GetBorderPointToward(BuildingElement el, Point target)
+        {
+            double x = el.Position.X;
+            double y = el.Position.Y;
+            double w = el.Width;
+            double h = el.Height;
+
+            Point center = el.Center;
+            double dx = target.X - center.X;
+            double dy = target.Y - center.Y;
+
+            // Pentru cercul de Start, punctul de ieșire este pe circumferință, nu pe bounding box.
+            if (el.Type == BuildingElementType.StartPoint)
+            {
+                double len = Math.Sqrt(dx * dx + dy * dy);
+                if (len < 0.001) return center;
+
+                double r = Math.Min(el.Width, el.Height) / 2.0;
+                return new Point(center.X + dx / len * r, center.Y + dy / len * r);
+            }
+
+            // Pentru restul elementelor, alegem latura spre care este celălalt element.
+            if (Math.Abs(dx) >= Math.Abs(dy))
+            {
+                // Ieșire prin stânga/dreapta.
+                return dx >= 0
+                    ? new Point(x + w, center.Y)
+                    : new Point(x, center.Y);
+            }
+            else
+            {
+                // Ieșire prin sus/jos.
+                return dy >= 0
+                    ? new Point(center.X, y + h)
+                    : new Point(center.X, y);
+            }
+        }
+
+        private double GetHallwayThickness(BuildingElement fromEl, BuildingElement toEl)
+        {
+            // Cerința ta: holul să fie de înălțimea camerei.
+            // Dacă legătura este între două camere, folosim înălțimea celei mai mici camere.
+            if (fromEl.Type == BuildingElementType.Room && toEl.Type == BuildingElementType.Room)
+                return Math.Min(fromEl.Height, toEl.Height);
+
+            if (fromEl.Type == BuildingElementType.Room)
+                return fromEl.Height;
+
+            if (toEl.Type == BuildingElementType.Room)
+                return toEl.Height;
+
+            // Pentru Start, Exit, Scări, Lift etc., folosim o grosime rezonabilă.
+            return 48;
+        }
+
+        private void DrawPolylinePath(List<Point> points, Brush brush, double thickness,
+                                      int zIndex, bool dashed = false, double opacity = 1.0)
+        {
+            if (points == null || points.Count < 2) return;
+
+            var figure = new PathFigure
+            {
+                StartPoint = points[0],
+                IsClosed = false,
+                IsFilled = false
+            };
+
+            var segment = new PolyLineSegment();
+            for (int i = 1; i < points.Count; i++)
+                segment.Points.Add(points[i]);
+
+            figure.Segments.Add(segment);
+
+            var geometry = new PathGeometry();
+            geometry.Figures.Add(figure);
+
+            var path = new Path
+            {
+                Data = geometry,
+                Stroke = brush,
+                StrokeThickness = thickness,
+                StrokeStartLineCap = PenLineCap.Flat,
+                StrokeEndLineCap = PenLineCap.Flat,
+                StrokeLineJoin = PenLineJoin.Miter,
+                Opacity = opacity,
+                IsHitTestVisible = false
+            };
+
+            if (dashed)
+                path.StrokeDashArray = new DoubleCollection { 8, 4 };
+
+            Canvas.SetZIndex(path, zIndex);
+            _canvas.Children.Add(path);
+        }
+
+        private void DrawConnectionLabel(List<Point> route, string text, bool onPath)
+        {
+            if (route == null || route.Count < 2) return;
+
+            int segIndex = Math.Max(0, (route.Count - 1) / 2);
+            Point a = route[segIndex];
+            Point b = route[segIndex + 1];
+
+            double mx = (a.X + b.X) / 2.0 + 4;
+            double my = (a.Y + b.Y) / 2.0 - 10;
+
+            var lbl = new TextBlock
+            {
+                Text = text,
+                FontSize = 9,
+                Foreground = onPath
+                    ? PathLine
+                    : new SolidColorBrush(Color.FromArgb(200, 210, 230, 255)),
+                Background = new SolidColorBrush(Color.FromArgb(120, 28, 39, 48)),
+                Padding = new Thickness(2, 0, 2, 0),
+                IsHitTestVisible = false
+            };
+
+            Canvas.SetLeft(lbl, mx);
+            Canvas.SetTop(lbl, my);
+            Canvas.SetZIndex(lbl, 8);
+            _canvas.Children.Add(lbl);
+        }
+
+        private void DrawArrowOnRoute(List<Point> route, Brush brush, int zIndex)
+        {
+            if (route == null || route.Count < 2) return;
+
+            // Punem săgeata pe ultimul segment suficient de lung.
+            for (int i = route.Count - 2; i >= 0; i--)
+            {
+                Point a = route[i];
+                Point b = route[i + 1];
+                double dx = b.X - a.X;
+                double dy = b.Y - a.Y;
+                double len = Math.Sqrt(dx * dx + dy * dy);
+
+                if (len < 12) continue;
+
+                double ux = dx / len;
+                double uy = dy / len;
+
+                Point p2 = new Point(a.X + dx * 0.65, a.Y + dy * 0.65);
+                Point p1 = new Point(p2.X - ux * 22, p2.Y - uy * 22);
+
+                DrawArrow(p1.X, p1.Y, p2.X, p2.Y, brush, 3, zIndex: zIndex, arrowOnly: false);
+                return;
             }
         }
 
