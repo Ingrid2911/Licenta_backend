@@ -20,6 +20,7 @@ namespace time_expanded_graph
             _viewModel.ExpandedGraphGenerated += OnExpandedGraphGenerated;
             _viewModel.AlgorithmsExecuted += OnAlgorithmsExecuted;
             _viewModel.EvacuationPathReady += OnEvacuationPathReady;
+            _viewModel.BuildingPlanGenerated += OnBuildingPlanGenerated;
 
             // GraphTabs.BuildingGraphRequested se subscrie după ce controalele sunt inițializate
             Loaded += (s, e) =>
@@ -32,6 +33,12 @@ namespace time_expanded_graph
         {
             if (_viewModel.CurrentGraph != null)
                 GraphTabs.DrawSimpleGraph(_viewModel.CurrentGraph);
+        }
+
+        private void OnBuildingPlanGenerated()
+        {
+            if (_viewModel.GeneratedBuildingPlan != null)
+                GraphTabs.LoadBuildingPlan(_viewModel.GeneratedBuildingPlan);
         }
 
         private void OnExpandedGraphGenerated()

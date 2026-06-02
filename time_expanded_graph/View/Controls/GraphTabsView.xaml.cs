@@ -73,5 +73,10 @@ namespace time_expanded_graph.View.Controls
             renderer.DrawWithFlow(graph, EdmondsKarpGraphCanvas,
                 edmondsKarpEdges, edmondsKarpIndexToNodeMap);
         }
+
+        public void LoadBuildingPlan(BuildingPlan plan)
+        {
+            BuildingPlan.LoadPlan(plan);
+        }
     }
 }

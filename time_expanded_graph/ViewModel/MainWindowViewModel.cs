@@ -31,6 +31,7 @@ namespace time_expanded_graph.ViewModels
         public string People { get; set; } = "";
         public string MaxTime { get; set; } = "";
         public string SecondsPerTimeUnit { get; set; } = "";
+        public BuildingPlan? GeneratedBuildingPlan { get; private set; }
 
         // ─── Text afișat ──────────────────────────────────────────────────────────
 
@@ -79,6 +80,7 @@ namespace time_expanded_graph.ViewModels
         public event Action? ExpandedGraphGenerated;
         public event Action? AlgorithmsExecuted;
         public event Action? EvacuationPathReady;  // NOU: drum optim disponibil
+        public event Action? BuildingPlanGenerated;
 
         // ─── Constructor ─────────────────────────────────────────────────────────
 
@@ -102,12 +104,15 @@ namespace time_expanded_graph.ViewModels
 
             currentGraph = GraphGenerator.GenerateGraph(nodes, minCap, maxCap);
 
+            GeneratedBuildingPlan = BuildingPlanFactory.FromSimpleGraph(currentGraph);
+
             ResultText = "Graf generat.";
             FlowResultsText = "";
             EvacuationTimeSecondsText = "";
             OptimalEvacuationPath = new List<string>();
 
             SimpleGraphGenerated?.Invoke();
+            BuildingPlanGenerated?.Invoke();
         }
 
         private void SolveEvacuation()

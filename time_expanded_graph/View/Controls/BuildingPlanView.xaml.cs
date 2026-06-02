@@ -119,5 +119,19 @@ namespace time_expanded_graph.View.Controls
 
             StatusText.Text = $"Noduri: {nodes}  |  Conexiuni: {conns}  |  Start: {starts}  |  Ieșiri: {exits}";
         }
+
+        public void LoadPlan(BuildingPlan plan)
+        {
+            _plan.Clear();
+
+            foreach (var element in plan.Elements)
+                _plan.AddElement(element);
+
+            foreach (var connection in plan.Connections)
+                _plan.AddConnection(connection);
+
+            _drawing.Redraw();
+            UpdateStatus();
+        }
     }
 }

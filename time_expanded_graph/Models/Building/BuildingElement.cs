@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
 
 namespace time_expanded_graph.Models.Building
 {
@@ -9,36 +11,55 @@ namespace time_expanded_graph.Models.Building
         public string Id { get; private set; }
         public BuildingElementType Type { get; set; }
 
-        // Geometrie pe canvas
-        public Point Position { get; set; }   // colt stanga-sus
+        public Point Position { get; set; }
         public double Width { get; set; }
         public double Height { get; set; }
         public string Label { get; set; }
 
-        // Proprietati graf
         public int Capacity { get; set; }
         public int TravelTime { get; set; }
 
-        // Centrul elementului (pentru linii conexiune)
         public Point Center => new Point(Position.X + Width / 2, Position.Y + Height / 2);
 
-        public bool IsNode => true; // toate elementele arhitecturale sunt noduri
+        public bool IsNode => true;
 
-        public BuildingElement(BuildingElementType type, Point position,
-                               double width = 0, double height = 0)
+        public BuildingElement(
+            BuildingElementType type,
+            Point position,
+            double width = 0,
+            double height = 0,
+            string? forcedId = null)
         {
-            _idCounter++;
-            Id = $"{TypePrefix(type)}_{_idCounter}";
             Type = type;
+
+            if (string.IsNullOrWhiteSpace(forcedId))
+            {
+                _idCounter++;
+                Id = $"{TypePrefix(type)}_{_idCounter}";
+            }
+            else
+            {
+                Id = forcedId;
+                SyncCounterFromId(forcedId);
+            }
+
             Position = position;
             Width = width > 0 ? width : DefaultWidth(type);
             Height = height > 0 ? height : DefaultHeight(type);
-            Label = DefaultLabel(type, _idCounter);
+            Label = DefaultLabel(type, Id);
             Capacity = DefaultCapacity(type);
             TravelTime = DefaultTravelTime(type);
         }
 
         public static void ResetCounter() => _idCounter = 0;
+
+        private static void SyncCounterFromId(string id)
+        {
+            string digits = new string(id.Where(char.IsDigit).ToArray());
+
+            if (int.TryParse(digits, out int number))
+                _idCounter = Math.Max(_idCounter, number);
+        }
 
         private static string TypePrefix(BuildingElementType t) => t switch
         {
@@ -50,14 +71,14 @@ namespace time_expanded_graph.Models.Building
             _ => "X"
         };
 
-        private static string DefaultLabel(BuildingElementType t, int n) => t switch
+        private static string DefaultLabel(BuildingElementType t, string id) => t switch
         {
-            BuildingElementType.Room => $"Camera {n}",
-            BuildingElementType.Stairs => "Scari",
+            BuildingElementType.Room => $"Camera {id}",
+            BuildingElementType.Stairs => "Scări",
             BuildingElementType.Elevator => "Lift",
-            BuildingElementType.ExitDoor => "Iesire",
+            BuildingElementType.ExitDoor => "Ieșire",
             BuildingElementType.StartPoint => "Start",
-            _ => $"El {n}"
+            _ => $"Element {id}"
         };
 
         private static double DefaultWidth(BuildingElementType t) => t switch
