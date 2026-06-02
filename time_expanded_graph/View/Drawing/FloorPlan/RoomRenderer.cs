@@ -4,7 +4,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using time_expanded_graph.Models.Building;
-using time_expanded_graph.View.Drawing.FloorPlan.Common;
 
 namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
 {
@@ -27,7 +26,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
         {
             _canvas = canvas;
         }
-
         public void Draw(BuildingElement el, int colorIndex, bool onPath)
         {
             Color roomColor = RoomColors[colorIndex % RoomColors.Length];
@@ -40,7 +38,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             DrawIdLabel(el, x, y, w, h);
             DrawResizeHandle(el);
         }
-
         private void DrawFill(double x, double y, double w, double h, Color color)
         {
             var fill = new Rectangle
@@ -54,7 +51,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             Panel.SetZIndex(fill, 1);
             _canvas.Children.Add(fill);
         }
-
         private void DrawBorder(BuildingElement el, double x, double y, double w, double h, bool onPath)
         {
             var border = new Rectangle
@@ -75,7 +71,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             border.MouseRightButtonDown += (s, e) => RaiseContextMenu(el, e);
             _canvas.Children.Add(border);
         }
-
         private void DrawLabel(BuildingElement el, double x, double y, double w, double h)
         {
             var lbl = new TextBlock
@@ -92,7 +87,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             Panel.SetZIndex(lbl, 11);
             _canvas.Children.Add(lbl);
         }
-
         private void DrawIdLabel(BuildingElement el, double x, double y, double w, double h)
         {
             var idlbl = new TextBlock
@@ -108,7 +102,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             Panel.SetZIndex(idlbl, 11);
             _canvas.Children.Add(idlbl);
         }
-
         private void DrawResizeHandle(BuildingElement el)
         {
             double rx = el.Position.X + el.Width - 10;
@@ -129,18 +122,13 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             handle.MouseLeftButtonDown += (s, e) => RaiseResizeMouseDown(el, e);
             _canvas.Children.Add(handle);
         }
-
-        // Events that will be handled by the main class
         public event Action<BuildingElement, MouseButtonEventArgs>? ElementMouseDown;
         public event Action<BuildingElement, MouseButtonEventArgs>? ContextMenuRequested;
         public event Action<BuildingElement, MouseButtonEventArgs>? ResizeMouseDown;
-
         private void RaiseElementMouseDown(BuildingElement el, MouseButtonEventArgs e)
             => ElementMouseDown?.Invoke(el, e);
-
         private void RaiseContextMenu(BuildingElement el, MouseButtonEventArgs e)
             => ContextMenuRequested?.Invoke(el, e);
-
         private void RaiseResizeMouseDown(BuildingElement el, MouseButtonEventArgs e)
             => ResizeMouseDown?.Invoke(el, e);
     }

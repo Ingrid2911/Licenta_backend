@@ -50,7 +50,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Common
             Panel.SetZIndex(path, zIndex);
             canvas.Children.Add(path);
         }
-
         public static void DrawArrow(Canvas canvas, double x1, double y1, double x2, double y2,
                                     Brush brush, double thick, int zIndex = 12, bool arrowOnly = false)
         {
@@ -92,7 +91,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Common
             Panel.SetZIndex(poly, zIndex + 1);
             canvas.Children.Add(poly);
         }
-
         public static Point GetBorderPointToward(BuildingElement el, Point target)
         {
             double x = el.Position.X;

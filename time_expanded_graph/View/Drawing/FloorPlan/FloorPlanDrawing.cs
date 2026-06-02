@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using time_expanded_graph.Models.Building;
 using time_expanded_graph.View.Drawing.FloorPlan.Elements;
@@ -19,7 +16,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan
         private readonly Canvas _canvas;
         private readonly BuildingPlan _plan;
 
-        // Sub-components
         private readonly GridRenderer _gridRenderer;
         private readonly ElementRenderer _elementRenderer;
         private readonly ConnectionRenderer _connectionRenderer;
@@ -45,7 +41,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan
 
             _canvas.Background = new SolidColorBrush(Color.FromRgb(28, 39, 48));
 
-            // Initialize sub-components
             _gridRenderer = new GridRenderer(_canvas);
             _elementRenderer = new ElementRenderer(_canvas);
             _connectionRenderer = new ConnectionRenderer(_canvas, _plan);
@@ -54,20 +49,17 @@ namespace time_expanded_graph.View.Drawing.FloorPlan
             _interactionHandler = new InteractionHandler(_canvas, _plan);
             _contextMenuHandler = new ContextMenuHandler(_plan);
 
-            // Wire up events
             _interactionHandler.PlanChanged += () => PlanChanged?.Invoke();
             _interactionHandler.RedrawRequested += Redraw;
 
             _contextMenuHandler.PlanChanged += () => PlanChanged?.Invoke();
             _contextMenuHandler.RedrawRequested += Redraw;
 
-            // Wire element events
             _elementRenderer.ElementMouseDown += _interactionHandler.HandleElementMouseDown;
             _elementRenderer.ResizeMouseDown += _interactionHandler.HandleResizeMouseDown;
             _elementRenderer.ContextMenuRequested += (el, e) =>
                 _contextMenuHandler.ShowContextMenu(el, _canvas);
         }
-
         public void AddElement(BuildingElementType type, Point pos)
         {
             var el = new BuildingElement(type, pos);
@@ -75,7 +67,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan
             Redraw();
             PlanChanged?.Invoke();
         }
-
         public void Redraw()
         {
             _canvas.Children.Clear();
@@ -89,13 +80,11 @@ namespace time_expanded_graph.View.Drawing.FloorPlan
 
             _legendRenderer.Draw();
         }
-
         public void HighlightPath(IEnumerable<string> nodeIds)
         {
             _optimalPath = nodeIds.ToList();
             Redraw();
         }
-
         public void ClearPath()
         {
             _optimalPath.Clear();

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -26,13 +25,11 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
         {
             _canvas = canvas;
         }
-
         public void Draw(BuildingElement el, bool onPath)
         {
             double x = el.Position.X, y = el.Position.Y;
             double w = el.Width, h = el.Height;
 
-            // Background
             var bg = new Rectangle
             {
                 Width = w,
@@ -53,7 +50,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             };
             _canvas.Children.Add(bg);
 
-            // Step lines (horizontal)
             int nSteps = Math.Max(3, (int)((h - 10) / StairsStep));
             double stepH = (h - 10) / nSteps;
             for (int i = 1; i <= nSteps; i++)
@@ -73,11 +69,9 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
                 _canvas.Children.Add(l);
             }
 
-            // Vertical arrow (up direction)
             GeometryHelper.DrawArrow(_canvas, x + w / 2, y + h - 8, x + w / 2, y + 8,
                       new SolidColorBrush(Color.FromRgb(68, 68, 65)), 1.5, zIndex: 12);
 
-            // Label
             var tb = new TextBlock
             {
                 Text = "SCARI",

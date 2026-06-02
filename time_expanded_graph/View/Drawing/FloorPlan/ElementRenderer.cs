@@ -29,17 +29,14 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             _stairsRenderer = new StairsRenderer(canvas);
             _elevatorRenderer = new ElevatorRenderer(canvas);
 
-            // Wire up events from individual renderers
             WireCommonEvents(_roomRenderer);
             WireCommonEvents(_exitRenderer);
             WireCommonEvents(_startRenderer);
             WireCommonEvents(_stairsRenderer);
             WireCommonEvents(_elevatorRenderer);
 
-            // Specifically wire resize event for RoomRenderer
             _roomRenderer.ResizeMouseDown += (el, e) => ResizeMouseDown?.Invoke(el, e);
         }
-
         private void WireCommonEvents(dynamic renderer)
         {
             renderer.ElementMouseDown += (Action<BuildingElement, MouseButtonEventArgs>)((el, e) =>
@@ -47,7 +44,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             renderer.ContextMenuRequested += (Action<BuildingElement, MouseButtonEventArgs>)((el, e) =>
                 ContextMenuRequested?.Invoke(el, e));
         }
-
         public void DrawAll(List<BuildingElement> elements, List<string> optimalPath)
         {
             int roomIdx = 0;

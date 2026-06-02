@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using time_expanded_graph.Models.Building;
 using time_expanded_graph.View.Drawing.FloorPlan.Common;
 
@@ -13,7 +10,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Connections
     {
         private readonly Canvas _canvas;
         private readonly BuildingPlan _plan;
-
         private static readonly SolidColorBrush ConnLine = new(Color.FromRgb(100, 160, 230));
         private static readonly SolidColorBrush PathLine = new(Color.FromRgb(56, 142, 60));
 
@@ -22,13 +18,11 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Connections
             _canvas = canvas;
             _plan = plan;
         }
-
         public void DrawAll(List<string> optimalPath)
         {
             foreach (var conn in _plan.Connections)
                 Draw(conn, optimalPath);
         }
-
         private void Draw(HallwayConnection conn, List<string> optimalPath)
         {
             var fromEl = _plan.Elements.FirstOrDefault(e => e.Id == conn.FromId);
@@ -41,7 +35,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Connections
 
             double hallwayThickness = CalculateHallwayThickness(fromEl, toEl);
 
-            // Draw hallway body
             GeometryHelper.DrawPolylinePath(
                 _canvas, route,
                 onPath
@@ -50,7 +43,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Connections
                 hallwayThickness,
                 zIndex: onPath ? 6 : 3);
 
-            // Draw center line
             GeometryHelper.DrawPolylinePath(
                 _canvas, route,
                 onPath ? PathLine : ConnLine,
@@ -60,7 +52,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Connections
 
             DrawLabel(route, $"c:{conn.Capacity} t:{conn.TravelTime}", onPath);
         }
-
         private double CalculateHallwayThickness(BuildingElement fromEl, BuildingElement toEl)
         {
             if (fromEl.Type == BuildingElementType.Room && toEl.Type == BuildingElementType.Room)
@@ -74,7 +65,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Connections
 
             return 48;
         }
-
         private void DrawLabel(List<Point> route, string text, bool onPath)
         {
             if (route.Count < 2) return;
@@ -101,7 +91,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Connections
             Panel.SetZIndex(lbl, 8);
             _canvas.Children.Add(lbl);
         }
-
         private bool IsConnOnPath(HallwayConnection conn, List<string> optimalPath)
         {
             if (optimalPath.Count < 2) return false;

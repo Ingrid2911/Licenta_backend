@@ -23,7 +23,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Legend
             DrawBackground(lx, ly);
             DrawItems(lx, ly);
         }
-
         private void DrawBackground(double lx, double ly)
         {
             var bg = new Rectangle
@@ -41,7 +40,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Legend
             Panel.SetZIndex(bg, 90);
             _canvas.Children.Add(bg);
         }
-
         private void DrawItems(double lx, double ly)
         {
             var items = new[]
@@ -64,7 +62,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Legend
                 DrawText(lx + 30, iy + 1, text);
             }
         }
-
         private void DrawSymbol(double x, double y, string symbol, Color color)
         {
             var stb = new TextBlock
@@ -80,7 +77,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Legend
             Panel.SetZIndex(stb, 91);
             _canvas.Children.Add(stb);
         }
-
         private void DrawText(double x, double y, string text)
         {
             var ttb = new TextBlock

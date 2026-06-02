@@ -20,7 +20,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
         {
             _canvas = canvas;
         }
-
         public void Draw(BuildingElement el, bool onPath)
         {
             double cx = el.Position.X + el.Width / 2;
@@ -49,7 +48,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             };
             _canvas.Children.Add(circle);
 
-            // S symbol
             var tb = new TextBlock
             {
                 Text = "S",
@@ -64,7 +62,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             Panel.SetZIndex(tb, 11);
             _canvas.Children.Add(tb);
 
-            // ID label
             var idtb = new TextBlock
             {
                 Text = el.Id,

@@ -49,7 +49,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan
                 endL
             };
         }
-
         private static Point GetPointOnElementBorder(BuildingElement element, Point targetPoint)
         {
             Rect rect = new Rect(

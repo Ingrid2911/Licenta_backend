@@ -29,7 +29,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             double x = el.Position.X, y = el.Position.Y;
             double w = el.Width, h = el.Height;
 
-            // Background
             var bg = new Rectangle
             {
                 Width = w,
@@ -49,8 +48,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
                 e.Handled = true;
             };
             _canvas.Children.Add(bg);
-
-            // Interior X
             var d1 = new Line
             {
                 X1 = x + 6,
@@ -74,7 +71,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             Panel.SetZIndex(d1, 11); Panel.SetZIndex(d2, 11);
             _canvas.Children.Add(d1); _canvas.Children.Add(d2);
 
-            // Label
             var tb = new TextBlock
             {
                 Text = "LIFT",

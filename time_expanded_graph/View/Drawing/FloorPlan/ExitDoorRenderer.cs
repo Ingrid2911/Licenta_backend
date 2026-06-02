@@ -27,7 +27,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             double x = el.Position.X, y = el.Position.Y;
             double w = el.Width, h = el.Height;
 
-            // Exit rectangle
             var box = new Rectangle
             {
                 Width = w,
@@ -52,11 +51,9 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             };
             _canvas.Children.Add(box);
 
-            // Arrow to the right
             double cx = x + w / 2, cy = y + h / 2;
             GeometryHelper.DrawArrow(_canvas, cx - 8, cy, cx + w / 2 + 14, cy, Brushes.White, 2.5);
 
-            // EXIT text
             var tb = new TextBlock
             {
                 Text = "EXIT",
@@ -71,7 +68,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             Panel.SetZIndex(tb, 11);
             _canvas.Children.Add(tb);
 
-            // ID label
             var idtb = new TextBlock
             {
                 Text = el.Id,

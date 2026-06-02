@@ -37,7 +37,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Interaction
             _canvas.MouseMove += OnCanvasMouseMove;
             _canvas.MouseLeftButtonUp += OnCanvasMouseUp;
         }
-
         public void HandleElementMouseDown(BuildingElement el, MouseButtonEventArgs e)
         {
             if (IsConnectMode)
@@ -52,7 +51,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Interaction
             _canvas.CaptureMouse();
             e.Handled = true;
         }
-
         private void HandleConnectMode(BuildingElement el, MouseButtonEventArgs e)
         {
             if (_connectFrom == null)
@@ -85,13 +83,10 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Interaction
             }
             e.Handled = true;
         }
-
         public void HandleResizeMouseDown(BuildingElement el, MouseButtonEventArgs e)
         {
-            // Stop any dragging that might be happening
             _dragging = null;
 
-            // Start resizing
             _resizing = el;
             _resizeStart = e.GetPosition(_canvas);
             _resizeOrigW = el.Width;
@@ -99,12 +94,10 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Interaction
             _canvas.CaptureMouse();
             e.Handled = true;
         }
-
         private void OnCanvasMouseMove(object sender, MouseEventArgs e)
         {
             Point mp = e.GetPosition(_canvas);
 
-            // Handle resizing
             if (_resizing != null && e.LeftButton == MouseButtonState.Pressed)
             {
                 double dw = mp.X - _resizeStart.X;
@@ -115,7 +108,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Interaction
                 return;
             }
 
-            // Handle dragging
             if (_dragging != null && e.LeftButton == MouseButtonState.Pressed)
             {
                 _isDragging = true;
@@ -125,10 +117,8 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Interaction
                 RedrawRequested?.Invoke();
             }
         }
-
         private void OnCanvasMouseUp(object sender, MouseButtonEventArgs e)
         {
-            // Handle resize end
             if (_resizing != null)
             {
                 _canvas.ReleaseMouseCapture();
@@ -137,7 +127,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Interaction
                 return;
             }
 
-            // Handle drag end
             if (_dragging != null)
             {
                 _canvas.ReleaseMouseCapture();
@@ -146,7 +135,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Interaction
                 _isDragging = false;
             }
         }
-
         private void DrawSelectionIndicator(BuildingElement el)
         {
             double x = el.Position.X - 4, y = el.Position.Y - 4;

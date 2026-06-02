@@ -21,7 +21,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.OptimalPath
             _canvas = canvas;
             _plan = plan;
         }
-
         public void Draw(List<string> optimalPath)
         {
             var elements = new List<BuildingElement>();
@@ -33,20 +32,17 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.OptimalPath
 
             if (elements.Count < 2) return;
 
-            // Draw arrows on each L-shaped route segment
             for (int i = 0; i < elements.Count - 1; i++)
             {
                 List<Point> route = BuildLRouteBetweenElements(elements[i], elements[i + 1]);
                 DrawArrowOnRoute(route);
             }
 
-            // Draw circles on nodes
             foreach (var el in elements)
             {
                 DrawNodeCircle(el);
             }
         }
-
         private List<Point> BuildLRouteBetweenElements(BuildingElement fromEl, BuildingElement toEl)
         {
             Point fromCenter = fromEl.Center;
@@ -57,7 +53,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.OptimalPath
 
             return BuildLRoute(start, end);
         }
-
         private List<Point> BuildLRoute(Point start, Point end)
         {
             var points = new List<Point> { start };
@@ -79,7 +74,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.OptimalPath
             points.Add(end);
             return points;
         }
-
         private void DrawArrowOnRoute(List<Point> route)
         {
             if (route == null || route.Count < 2) return;
@@ -105,7 +99,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.OptimalPath
                 return;
             }
         }
-
         private void DrawNodeCircle(BuildingElement el)
         {
             Point p = el.Center;
