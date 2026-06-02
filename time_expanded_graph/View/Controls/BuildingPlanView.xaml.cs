@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using time_expanded_graph.Models.Building;
-using time_expanded_graph.View.Drawing;
+using time_expanded_graph.View.Drawing.FloorPlan;
 
 namespace time_expanded_graph.View.Controls
 {

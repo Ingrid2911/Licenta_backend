@@ -7,8 +7,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using time_expanded_graph.Models.Building;
+using time_expanded_graph.View.Dialogs;
 
-namespace time_expanded_graph.View.Drawing
+namespace time_expanded_graph.View.Drawing.FloorPlan
 {
     /// <summary>
     /// Renderer arhitectural pentru planul clădirii.
@@ -216,7 +217,7 @@ namespace time_expanded_graph.View.Drawing
                 IsHitTestVisible = false
             };
             Canvas.SetLeft(fill, x); Canvas.SetTop(fill, y);
-            Canvas.SetZIndex(fill, 1);
+            Panel.SetZIndex(fill, 1);
             _canvas.Children.Add(fill);
 
             // Pereți (bordură groasă)
@@ -233,7 +234,7 @@ namespace time_expanded_graph.View.Drawing
                 Tag = el.Id
             };
             Canvas.SetLeft(border, x); Canvas.SetTop(border, y);
-            Canvas.SetZIndex(border, 10);
+            Panel.SetZIndex(border, 10);
             border.MouseLeftButtonDown += (s, e) => OnElementMouseDown(el, e);
             border.MouseRightButtonDown += (s, e) => { ShowContextMenu(el); e.Handled = true; };
             _canvas.Children.Add(border);
@@ -251,7 +252,7 @@ namespace time_expanded_graph.View.Drawing
             };
             Canvas.SetLeft(lbl, x + 5);
             Canvas.SetTop(lbl, y + 8);
-            Canvas.SetZIndex(lbl, 11);
+            Panel.SetZIndex(lbl, 11);
             _canvas.Children.Add(lbl);
 
             // ID mic
@@ -266,7 +267,7 @@ namespace time_expanded_graph.View.Drawing
             };
             Canvas.SetLeft(idlbl, x + 5);
             Canvas.SetTop(idlbl, y + h - 18);
-            Canvas.SetZIndex(idlbl, 11);
+            Panel.SetZIndex(idlbl, 11);
             _canvas.Children.Add(idlbl);
 
             // Handle resize (pătrat mic în colțul dreapta-jos)
@@ -289,7 +290,7 @@ namespace time_expanded_graph.View.Drawing
                 Tag = "resize_" + el.Id
             };
             Canvas.SetLeft(handle, rx); Canvas.SetTop(handle, ry);
-            Canvas.SetZIndex(handle, 20);
+            Panel.SetZIndex(handle, 20);
             handle.MouseLeftButtonDown += (s, e) => OnResizeMouseDown(el, e);
             _canvas.Children.Add(handle);
         }
@@ -316,7 +317,7 @@ namespace time_expanded_graph.View.Drawing
                 Tag = el.Id
             };
             Canvas.SetLeft(box, x); Canvas.SetTop(box, y);
-            Canvas.SetZIndex(box, 10);
+            Panel.SetZIndex(box, 10);
             box.MouseLeftButtonDown += (s, e) => OnElementMouseDown(el, e);
             box.MouseRightButtonDown += (s, e) => { ShowContextMenu(el); e.Handled = true; };
             _canvas.Children.Add(box);
@@ -337,7 +338,7 @@ namespace time_expanded_graph.View.Drawing
                 Width = w
             };
             Canvas.SetLeft(tb, x); Canvas.SetTop(tb, y + h / 2 - 8);
-            Canvas.SetZIndex(tb, 11);
+            Panel.SetZIndex(tb, 11);
             _canvas.Children.Add(tb);
 
             // ID
@@ -351,7 +352,7 @@ namespace time_expanded_graph.View.Drawing
                 Width = w
             };
             Canvas.SetLeft(idtb, x); Canvas.SetTop(idtb, y + h + 2);
-            Canvas.SetZIndex(idtb, 11);
+            Panel.SetZIndex(idtb, 11);
             _canvas.Children.Add(idtb);
         }
 
@@ -376,7 +377,7 @@ namespace time_expanded_graph.View.Drawing
                 Tag = el.Id
             };
             Canvas.SetLeft(circle, cx - r); Canvas.SetTop(circle, cy - r);
-            Canvas.SetZIndex(circle, 10);
+            Panel.SetZIndex(circle, 10);
             circle.MouseLeftButtonDown += (s, e) => OnElementMouseDown(el, e);
             circle.MouseRightButtonDown += (s, e) => { ShowContextMenu(el); e.Handled = true; };
             _canvas.Children.Add(circle);
@@ -393,7 +394,7 @@ namespace time_expanded_graph.View.Drawing
                 Width = r * 2
             };
             Canvas.SetLeft(tb, cx - r); Canvas.SetTop(tb, cy - 10);
-            Canvas.SetZIndex(tb, 11);
+            Panel.SetZIndex(tb, 11);
             _canvas.Children.Add(tb);
 
             var idtb = new TextBlock
@@ -406,7 +407,7 @@ namespace time_expanded_graph.View.Drawing
                 Width = 80
             };
             Canvas.SetLeft(idtb, cx - 40); Canvas.SetTop(idtb, cy + r + 2);
-            Canvas.SetZIndex(idtb, 11);
+            Panel.SetZIndex(idtb, 11);
             _canvas.Children.Add(idtb);
         }
 
@@ -429,7 +430,7 @@ namespace time_expanded_graph.View.Drawing
                 Tag = el.Id
             };
             Canvas.SetLeft(bg, x); Canvas.SetTop(bg, y);
-            Canvas.SetZIndex(bg, 10);
+            Panel.SetZIndex(bg, 10);
             bg.MouseLeftButtonDown += (s, e) => OnElementMouseDown(el, e);
             bg.MouseRightButtonDown += (s, e) => { ShowContextMenu(el); e.Handled = true; };
             _canvas.Children.Add(bg);
@@ -450,7 +451,7 @@ namespace time_expanded_graph.View.Drawing
                     StrokeThickness = 1,
                     IsHitTestVisible = false
                 };
-                Canvas.SetZIndex(l, 11);
+                Panel.SetZIndex(l, 11);
                 _canvas.Children.Add(l);
             }
 
@@ -470,7 +471,7 @@ namespace time_expanded_graph.View.Drawing
                 Width = w
             };
             Canvas.SetLeft(tb, x); Canvas.SetTop(tb, y + h + 2);
-            Canvas.SetZIndex(tb, 12);
+            Panel.SetZIndex(tb, 12);
             _canvas.Children.Add(tb);
         }
 
@@ -492,7 +493,7 @@ namespace time_expanded_graph.View.Drawing
                 Tag = el.Id
             };
             Canvas.SetLeft(bg, x); Canvas.SetTop(bg, y);
-            Canvas.SetZIndex(bg, 10);
+            Panel.SetZIndex(bg, 10);
             bg.MouseLeftButtonDown += (s, e) => OnElementMouseDown(el, e);
             bg.MouseRightButtonDown += (s, e) => { ShowContextMenu(el); e.Handled = true; };
             _canvas.Children.Add(bg);
@@ -518,7 +519,7 @@ namespace time_expanded_graph.View.Drawing
                 StrokeThickness = 1.5,
                 IsHitTestVisible = false
             };
-            Canvas.SetZIndex(d1, 11); Canvas.SetZIndex(d2, 11);
+            Panel.SetZIndex(d1, 11); Panel.SetZIndex(d2, 11);
             _canvas.Children.Add(d1); _canvas.Children.Add(d2);
 
             var tb = new TextBlock
@@ -532,7 +533,7 @@ namespace time_expanded_graph.View.Drawing
                 Width = w
             };
             Canvas.SetLeft(tb, x); Canvas.SetTop(tb, y + h + 2);
-            Canvas.SetZIndex(tb, 12);
+            Panel.SetZIndex(tb, 12);
             _canvas.Children.Add(tb);
         }
 
@@ -546,7 +547,7 @@ namespace time_expanded_graph.View.Drawing
             bool onPath = IsConnOnPath(conn);
 
             // Traseu în formă de L: nu mai desenăm centru -> centru, ci margine -> cot -> margine.
-            List<Point> route = BuildLRouteBetweenElements(fromEl, toEl);
+            List<Point> route = HallwayRouter.BuildRoute(fromEl, toEl);
             if (route.Count < 2) return;
 
             // Grosimea holului este calculată din înălțimea camerei.
@@ -556,14 +557,14 @@ namespace time_expanded_graph.View.Drawing
             // Corpul holului. Este desenat sub camere, iar camerele îl acoperă la capete,
             // deci pare că intră exact din marginea camerei.
             DrawPolylinePath(
-                route,
-                onPath
-                    ? new SolidColorBrush(Color.FromArgb(210, 56, 142, 60))
-                    : new SolidColorBrush(Color.FromArgb(110, 100, 160, 230)),
-                hallwayThickness,
-                zIndex: onPath ? 6 : 3,
-                dashed: false,
-                opacity: onPath ? 0.95 : 0.75);
+               route,
+               onPath
+               ? new SolidColorBrush(Color.FromArgb(230, 56, 142, 60))
+               : new SolidColorBrush(Color.FromArgb(180, 100, 160, 230)),
+               hallwayThickness,
+               zIndex: onPath ? 6 : 3,
+               dashed: false,
+               opacity: 0.95);
 
             // Linie centrală subțire, doar ca să se vadă direcția/conexiunea în mijlocul holului.
             DrawPolylinePath(
@@ -614,7 +615,7 @@ namespace time_expanded_graph.View.Drawing
                     IsHitTestVisible = false
                 };
                 Canvas.SetLeft(c, p.X - 6); Canvas.SetTop(c, p.Y - 6);
-                Canvas.SetZIndex(c, 52);
+                Panel.SetZIndex(c, 52);
                 _canvas.Children.Add(c);
             }
         }
@@ -638,7 +639,7 @@ namespace time_expanded_graph.View.Drawing
                 IsHitTestVisible = false
             };
             Canvas.SetLeft(bg, lx); Canvas.SetTop(bg, ly);
-            Canvas.SetZIndex(bg, 90);
+            Panel.SetZIndex(bg, 90);
             _canvas.Children.Add(bg);
 
             var items = new[]
@@ -667,7 +668,7 @@ namespace time_expanded_graph.View.Drawing
                     TextAlignment = TextAlignment.Center
                 };
                 Canvas.SetLeft(stb, lx + 8); Canvas.SetTop(stb, iy);
-                Canvas.SetZIndex(stb, 91);
+                Panel.SetZIndex(stb, 91);
                 _canvas.Children.Add(stb);
 
                 var ttb = new TextBlock
@@ -678,7 +679,7 @@ namespace time_expanded_graph.View.Drawing
                     IsHitTestVisible = false
                 };
                 Canvas.SetLeft(ttb, lx + 30); Canvas.SetTop(ttb, iy + 1);
-                Canvas.SetZIndex(ttb, 91);
+                Panel.SetZIndex(ttb, 91);
                 _canvas.Children.Add(ttb);
             }
         }
@@ -812,7 +813,7 @@ namespace time_expanded_graph.View.Drawing
             if (dashed)
                 path.StrokeDashArray = new DoubleCollection { 8, 4 };
 
-            Canvas.SetZIndex(path, zIndex);
+            Panel.SetZIndex(path, zIndex);
             _canvas.Children.Add(path);
         }
 
@@ -841,7 +842,7 @@ namespace time_expanded_graph.View.Drawing
 
             Canvas.SetLeft(lbl, mx);
             Canvas.SetTop(lbl, my);
-            Canvas.SetZIndex(lbl, 8);
+            Panel.SetZIndex(lbl, 8);
             _canvas.Children.Add(lbl);
         }
 
@@ -903,7 +904,7 @@ namespace time_expanded_graph.View.Drawing
                     StrokeThickness = thick,
                     IsHitTestVisible = false
                 };
-                Canvas.SetZIndex(line, zIndex);
+                Panel.SetZIndex(line, zIndex);
                 _canvas.Children.Add(line);
             }
 
@@ -914,7 +915,7 @@ namespace time_expanded_graph.View.Drawing
                 Fill = brush,
                 IsHitTestVisible = false
             };
-            Canvas.SetZIndex(poly, zIndex + 1);
+            Panel.SetZIndex(poly, zIndex + 1);
             _canvas.Children.Add(poly);
         }
 
@@ -923,9 +924,9 @@ namespace time_expanded_graph.View.Drawing
             if (_optimalPath.Count < 2) return false;
             for (int i = 0; i < _optimalPath.Count - 1; i++)
             {
-                if ((_optimalPath[i] == conn.FromId && _optimalPath[i + 1] == conn.ToId) ||
-                    (conn.IsBidirectional &&
-                     _optimalPath[i] == conn.ToId && _optimalPath[i + 1] == conn.FromId))
+                if (_optimalPath[i] == conn.FromId && _optimalPath[i + 1] == conn.ToId ||
+                    conn.IsBidirectional &&
+                     _optimalPath[i] == conn.ToId && _optimalPath[i + 1] == conn.FromId)
                     return true;
             }
             return false;
@@ -944,7 +945,23 @@ namespace time_expanded_graph.View.Drawing
                 }
                 else if (_connectFrom.Id != el.Id)
                 {
-                    _plan.AddConnection(new HallwayConnection(_connectFrom.Id, el.Id));
+                    var dialog = new HallwaySettingsDialog
+                    {
+                        Owner = Window.GetWindow(_canvas)
+                    };
+
+                    if (dialog.ShowDialog() == true)
+                    {
+                        _plan.AddConnection(new HallwayConnection(
+                            _connectFrom.Id,
+                            el.Id,
+                            dialog.Capacity,
+                            dialog.TravelTime,
+                            true
+                        ));
+
+                        PlanChanged?.Invoke();
+                    }
                     _connectFrom = null;
                     Redraw();
                     PlanChanged?.Invoke();
@@ -1042,7 +1059,7 @@ namespace time_expanded_graph.View.Drawing
                 IsHitTestVisible = false
             };
             Canvas.SetLeft(sel, x); Canvas.SetTop(sel, y);
-            Canvas.SetZIndex(sel, 80);
+            Panel.SetZIndex(sel, 80);
             _canvas.Children.Add(sel);
         }
 
@@ -1118,9 +1135,9 @@ namespace time_expanded_graph.View.Drawing
     }
 
     // ─── Dialog redenumire ────────────────────────────────────────────────────────
-    internal class RenameDialog : System.Windows.Window
+    internal class RenameDialog : Window
     {
-        private readonly System.Windows.Controls.TextBox _tb;
+        private readonly TextBox _tb;
         public string NewName => _tb.Text;
 
         public RenameDialog(string current)
@@ -1133,7 +1150,7 @@ namespace time_expanded_graph.View.Drawing
 
             var sp = new StackPanel { Margin = new Thickness(16) };
 
-            _tb = new System.Windows.Controls.TextBox
+            _tb = new TextBox
             {
                 Text = current,
                 Height = 28,
@@ -1153,7 +1170,7 @@ namespace time_expanded_graph.View.Drawing
                 BorderThickness = new Thickness(0)
             };
             btn.Click += (s, e) => { DialogResult = true; };
-            _tb.KeyDown += (s, e) => { if (e.Key == System.Windows.Input.Key.Return) { DialogResult = true; } };
+            _tb.KeyDown += (s, e) => { if (e.Key == Key.Return) { DialogResult = true; } };
 
             sp.Children.Add(_tb);
             sp.Children.Add(btn);

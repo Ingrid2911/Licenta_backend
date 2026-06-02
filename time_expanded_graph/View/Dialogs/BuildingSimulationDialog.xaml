@@ -1,0 +1,111 @@
+﻿<Window x:Class="time_expanded_graph.View.Dialogs.BuildingSimulationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Parametri simulare"
+        Width="520"
+        Height="500"
+        MinWidth="520"
+        MinHeight="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#26323D">
+
+    <Grid Margin="28">
+        <Border Padding="28"
+                Background="#202B33"
+                CornerRadius="14">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Text="Parametri simulare evacuare"
+                           Foreground="White"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Margin="0,0,0,26"/>
+
+                <StackPanel Grid.Row="1">
+
+                    <TextBlock Text="Număr persoane:"
+                               Foreground="White"
+                               FontWeight="SemiBold"
+                               FontSize="15"
+                               Margin="0,0,0,6"/>
+
+                    <TextBox x:Name="PeopleBox"
+                             Text="10"
+                             Height="36"
+                             FontSize="15"
+                             Padding="8,4"
+                             Margin="0,0,0,22"
+                             Background="#111820"
+                             Foreground="White"
+                             BorderBrush="#607D8B"/>
+
+                    <TextBlock Text="Timp maxim, în unități de timp:"
+                               Foreground="White"
+                               FontWeight="SemiBold"
+                               FontSize="15"
+                               Margin="0,0,0,6"/>
+
+                    <TextBox x:Name="MaxTimeBox"
+                             Text="80"
+                             Height="36"
+                             FontSize="15"
+                             Padding="8,4"
+                             Margin="0,0,0,22"
+                             Background="#111820"
+                             Foreground="White"
+                             BorderBrush="#607D8B"/>
+
+                    <TextBlock Text="Secunde / unitate de timp:"
+                               Foreground="White"
+                               FontWeight="SemiBold"
+                               FontSize="15"
+                               Margin="0,0,0,6"/>
+
+                    <TextBox x:Name="SecondsPerTimeUnitBox"
+                             Text="60"
+                             Height="36"
+                             FontSize="15"
+                             Padding="8,4"
+                             Background="#111820"
+                             Foreground="White"
+                             BorderBrush="#607D8B"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Row="2"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Margin="0,30,0,0">
+
+                    <Button Content="Anulează"
+                            Width="110"
+                            Height="38"
+                            Margin="0,0,12,0"
+                            Background="#607D8B"
+                            Foreground="White"
+                            FontWeight="Bold"
+                            BorderThickness="0"
+                            Click="Cancel_Click"/>
+
+                    <Button Content="Pornește"
+                            Width="110"
+                            Height="38"
+                            Background="#009C22"
+                            Foreground="White"
+                            FontWeight="Bold"
+                            BorderThickness="0"
+                            Click="Ok_Click"/>
+
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

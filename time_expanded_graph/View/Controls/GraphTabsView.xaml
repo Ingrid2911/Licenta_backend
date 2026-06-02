@@ -18,26 +18,46 @@
 
         <!-- TAB 3: Time-expanded -->
         <TabItem Header="Time-expanded">
-            <Canvas x:Name="ExpandedGraphCanvas"
-                    Background="#202B33"/>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto">
+                <Canvas x:Name="ExpandedGraphCanvas"
+                Width="1600"
+                Height="1000"
+                Background="#202B33"/>
+            </ScrollViewer>
         </TabItem>
 
         <!-- TAB 4: Dinic -->
         <TabItem Header="Dinic">
-            <Canvas x:Name="DinicGraphCanvas"
-                    Background="#202B33"/>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto">
+                <Canvas x:Name="DinicGraphCanvas"
+                Width="1600"
+                Height="1000"
+                Background="#202B33"/>
+            </ScrollViewer>
         </TabItem>
 
         <!-- TAB 5: Push-Relabel -->
         <TabItem Header="Push-Relabel">
-            <Canvas x:Name="PushRelabelGraphCanvas"
-                    Background="#202B33"/>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+          VerticalScrollBarVisibility="Auto">
+                <Canvas x:Name="PushRelabelGraphCanvas"
+        Width="1600"
+        Height="1000"
+        Background="#202B33"/>
+            </ScrollViewer>
         </TabItem>
 
         <!-- TAB 6: Edmonds-Karp -->
         <TabItem Header="Edmonds-Karp">
-            <Canvas x:Name="EdmondsKarpGraphCanvas"
-                    Background="#202B33"/>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+  VerticalScrollBarVisibility="Auto">
+                <Canvas x:Name="EdmondsKarpGraphCanvas"
+Width="1600"
+Height="1000"
+Background="#202B33"/>
+            </ScrollViewer>
         </TabItem>
 
     </TabControl>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using time_expanded_graph.View.Dialogs;
 using time_expanded_graph.ViewModels;
 
 namespace time_expanded_graph
@@ -62,8 +63,17 @@ namespace time_expanded_graph
 
         private void OnBuildingGraphRequested(object? sender, EventArgs e)
         {
+            var dialog = new BuildingSimulationDialog
+            {
+                Owner = this
+            };
+
+            if (dialog.ShowDialog() != true)
+                return;
+
             var plan = GraphTabs.GetBuildingPlan();
-            _viewModel.SolveFromBuildingPlan(plan);
+
+            _viewModel.SolveFromBuildingPlan(plan, dialog.Parameters);
         }
     }
 }

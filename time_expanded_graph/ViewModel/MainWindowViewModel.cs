@@ -126,24 +126,10 @@ namespace time_expanded_graph.ViewModels
         /// <summary>
         /// Convertește planul clădirii într-un SimpleGraph și rulează algoritmii.
         /// </summary>
-        public void SolveFromBuildingPlan(BuildingPlan plan)
+        public void SolveFromBuildingPlan(
+    BuildingPlan plan,
+    BuildingSimulationParameters parameters)
         {
-            if (!int.TryParse(People, out int people) || people <= 0)
-            {
-                MessageBox.Show("Introduceți numărul de persoane în câmpul 'Persoane' din panoul din dreapta.");
-                return;
-            }
-            if (!int.TryParse(MaxTime, out int maxTime) || maxTime <= 0)
-            {
-                MessageBox.Show("Introduceți timpul maxim în câmpul 'Timp Maxim' din panoul din dreapta.");
-                return;
-            }
-            if (!int.TryParse(SecondsPerTimeUnit, out int secPerUnit) || secPerUnit <= 0)
-            {
-                MessageBox.Show("Introduceți secunde/unitate timp în panoul din dreapta.");
-                return;
-            }
-
             var (graph, error) = plan.ToSimpleGraph();
 
             if (graph == null)
@@ -156,7 +142,11 @@ namespace time_expanded_graph.ViewModels
             currentGraph = graph;
             SimpleGraphGenerated?.Invoke();
 
-            RunEvacuationAlgorithms(graph, people, maxTime, secPerUnit);
+            RunEvacuationAlgorithms(
+                graph,
+                parameters.People,
+                parameters.MaxTime,
+                parameters.SecondsPerTimeUnit);
         }
 
         // ─── Logică comună evacuare ───────────────────────────────────────────────
