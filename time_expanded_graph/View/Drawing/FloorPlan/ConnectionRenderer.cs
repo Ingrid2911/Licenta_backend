@@ -38,8 +38,8 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Connections
             GeometryHelper.DrawPolylinePath(
                 _canvas, route,
                 onPath
-                    ? new SolidColorBrush(Color.FromArgb(230, 56, 142, 60))
-                    : new SolidColorBrush(Color.FromArgb(180, 100, 160, 230)),
+                    ? new SolidColorBrush(Color.FromArgb(255, 56, 142, 60))
+                    : new SolidColorBrush(Color.FromArgb(255, 3, 48, 115)),
                 hallwayThickness,
                 zIndex: onPath ? 6 : 3);
 
@@ -55,15 +55,15 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Connections
         private double CalculateHallwayThickness(BuildingElement fromEl, BuildingElement toEl)
         {
             if (fromEl.Type == BuildingElementType.Room && toEl.Type == BuildingElementType.Room)
-                return Math.Min(fromEl.Height, toEl.Height);
+                return Math.Min(fromEl.Height, toEl.Height)*0.4;
 
             if (fromEl.Type == BuildingElementType.Room)
-                return fromEl.Height;
+                return fromEl.Height*0.4;
 
             if (toEl.Type == BuildingElementType.Room)
-                return toEl.Height;
+                return toEl.Height*0.4;
 
-            return 48;
+            return 30;
         }
         private void DrawLabel(List<Point> route, string text, bool onPath)
         {
