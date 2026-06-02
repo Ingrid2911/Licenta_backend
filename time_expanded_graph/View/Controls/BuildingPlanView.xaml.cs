@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using time_expanded_graph.Models.Building;
+using time_expanded_graph.Services;
 using time_expanded_graph.View.Drawing.FloorPlan;
 
 namespace time_expanded_graph.View.Controls
@@ -132,6 +134,75 @@ namespace time_expanded_graph.View.Controls
 
             _drawing.Redraw();
             UpdateStatus();
+        }
+
+        private void BtnSavePlan_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SaveFileDialog
+            {
+                Title = "Salvează planul clădirii",
+                Filter = "EvacPath plan (*.evacpath)|*.evacpath|JSON (*.json)|*.json",
+                FileName = "plan_cladire.evacpath",
+                DefaultExt = ".evacpath",
+                AddExtension = true
+            };
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            try
+            {
+                BuildingPlanStorageService.Save(_plan, dialog.FileName);
+
+                MessageBox.Show(
+                    "Planul a fost salvat cu succes.",
+                    "Salvare reușită",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Planul nu a putut fi salvat.\n\n{ex.Message}",
+                    "Eroare salvare",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void BtnLoadPlan_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Title = "Încarcă planul clădirii",
+                Filter = "EvacPath plan (*.evacpath)|*.evacpath|JSON (*.json)|*.json",
+                DefaultExt = ".evacpath",
+                Multiselect = false
+            };
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            try
+            {
+                BuildingPlan loadedPlan = BuildingPlanStorageService.Load(dialog.FileName);
+
+                LoadPlan(loadedPlan);
+
+                MessageBox.Show(
+                    "Planul a fost încărcat cu succes.",
+                    "Încărcare reușită",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Planul nu a putut fi încărcat.\n\n{ex.Message}",
+                    "Eroare încărcare",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
     }
 }

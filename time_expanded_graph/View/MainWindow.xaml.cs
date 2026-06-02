@@ -22,7 +22,6 @@ namespace time_expanded_graph
             _viewModel.EvacuationPathReady += OnEvacuationPathReady;
             _viewModel.BuildingPlanGenerated += OnBuildingPlanGenerated;
 
-            // GraphTabs.BuildingGraphRequested se subscrie după ce controalele sunt inițializate
             Loaded += (s, e) =>
             {
                 GraphTabs.BuildingGraphRequested += OnBuildingGraphRequested;
