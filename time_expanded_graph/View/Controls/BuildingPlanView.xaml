@@ -97,20 +97,6 @@
                         Background="#455A64"
                         Click="BtnAddRoom_Click"
                         ToolTip="Cameră / încăpere"/>
-                <Button x:Name="BtnAddStairs"
-                        Content="⬆ Scări"
-                        Style="{StaticResource PaletteBtn}"
-                        Background="#1565C0"
-                        Click="BtnAddStairs_Click"
-                        ToolTip="Scări (timp traversare 2 u.t.)"/>
-
-                <Button x:Name="BtnAddElevator"
-                        Content="⊞ Lift"
-                        Style="{StaticResource PaletteBtn}"
-                        Background="#6A1B9A"
-                        Click="BtnAddElevator_Click"
-                        ToolTip="Lift (timp traversare 3 u.t.)"/>
-
                 <Button x:Name="BtnAddExit"
                         Content="🚨 Ieșire"
                         Style="{StaticResource PaletteBtn}"
@@ -147,13 +133,13 @@
                 <Button x:Name="BtnSavePlan"
                         Content="💾 Salvează"
                         Style="{StaticResource PaletteBtn}"
-                        Background="#455A64"
+                        Background="#b56e04"
                         Click="BtnSavePlan_Click"/>
 
                 <Button x:Name="BtnLoadPlan"
                         Content="📂 Încarcă"
                         Style="{StaticResource PaletteBtn}"
-                        Background="#455A64"
+                        Background="#0d10ba"
                         Click="BtnLoadPlan_Click"/>
 
             </WrapPanel>

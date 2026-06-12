@@ -10,11 +10,12 @@
         ResizeMode="NoResize"
         Background="#26323D">
 
-    <Grid Margin="24">
+    <Grid Margin="24,24,24,13">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="38"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
@@ -24,7 +25,7 @@
                    FontWeight="Bold"
                    Margin="0,0,0,22"/>
 
-        <StackPanel Grid.Row="1">
+        <StackPanel Margin="0,51,0,0" Grid.RowSpan="2">
 
             <TextBlock Text="Capacitate"
                        Foreground="White"
@@ -51,10 +52,10 @@
 
         </StackPanel>
 
-        <StackPanel Grid.Row="2"
+        <StackPanel Grid.Row="3"
                     Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,24,0,0">
+                    HorizontalAlignment="Left"
+                    Margin="142,2,0,0" Width="210">
 
             <Button Content="Anulează"
                     Width="100"

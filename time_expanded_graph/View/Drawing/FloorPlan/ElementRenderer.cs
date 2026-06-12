@@ -13,8 +13,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
         private readonly RoomRenderer _roomRenderer;
         private readonly ExitDoorRenderer _exitRenderer;
         private readonly StartPointRenderer _startRenderer;
-        private readonly StairsRenderer _stairsRenderer;
-        private readonly ElevatorRenderer _elevatorRenderer;
 
         public event Action<BuildingElement, MouseButtonEventArgs>? ElementMouseDown;
         public event Action<BuildingElement, MouseButtonEventArgs>? ContextMenuRequested;
@@ -26,14 +24,10 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
             _roomRenderer = new RoomRenderer(canvas);
             _exitRenderer = new ExitDoorRenderer(canvas);
             _startRenderer = new StartPointRenderer(canvas);
-            _stairsRenderer = new StairsRenderer(canvas);
-            _elevatorRenderer = new ElevatorRenderer(canvas);
 
             WireCommonEvents(_roomRenderer);
             WireCommonEvents(_exitRenderer);
             WireCommonEvents(_startRenderer);
-            WireCommonEvents(_stairsRenderer);
-            WireCommonEvents(_elevatorRenderer);
 
             _roomRenderer.ResizeMouseDown += (el, e) => ResizeMouseDown?.Invoke(el, e);
         }
@@ -61,12 +55,6 @@ namespace time_expanded_graph.View.Drawing.FloorPlan.Elements
                         break;
                     case BuildingElementType.StartPoint:
                         _startRenderer.Draw(el, onPath);
-                        break;
-                    case BuildingElementType.Stairs:
-                        _stairsRenderer.Draw(el, onPath);
-                        break;
-                    case BuildingElementType.Elevator:
-                        _elevatorRenderer.Draw(el, onPath);
                         break;
                 }
             }
