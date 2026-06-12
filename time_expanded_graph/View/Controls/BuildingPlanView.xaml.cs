@@ -30,10 +30,6 @@ namespace time_expanded_graph.View.Controls
             => AddElementAtAuto(BuildingElementType.StartPoint);
         private void BtnAddRoom_Click(object sender, RoutedEventArgs e)
             => AddElementAtAuto(BuildingElementType.Room);
-        private void BtnAddStairs_Click(object sender, RoutedEventArgs e)
-            => AddElementAtAuto(BuildingElementType.Stairs);
-        private void BtnAddElevator_Click(object sender, RoutedEventArgs e)
-            => AddElementAtAuto(BuildingElementType.Elevator);
         private void BtnAddExit_Click(object sender, RoutedEventArgs e)
             => AddElementAtAuto(BuildingElementType.ExitDoor);
         private void AddElementAtAuto(BuildingElementType type)
@@ -67,6 +63,7 @@ namespace time_expanded_graph.View.Controls
 
             if (r == MessageBoxResult.Yes)
             {
+                _drawing.ClearPath();
                 _plan.Clear();
                 _drawing.Redraw();
                 UpdateStatus();
@@ -91,6 +88,7 @@ namespace time_expanded_graph.View.Controls
         }
         public void LoadPlan(BuildingPlan plan)
         {
+            _drawing.ClearPath();
             _plan.Clear();
 
             foreach (var element in plan.Elements)

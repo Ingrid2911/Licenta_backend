@@ -122,24 +122,32 @@ namespace time_expanded_graph.ViewModels
                 parameters.SecondsPerTimeUnit);
         }
         private void RunEvacuationAlgorithms(
-            SimpleGraph graph,
-            int people = -1,
-            int maxTime = -1,
-            int secondsPerTimeUnit = 1)
+    SimpleGraph graph,
+    int people = -1,
+    int maxTime = -1,
+    int secondsPerTimeUnit = 1)
         {
             if (people < 0 && !int.TryParse(People, out people))
             {
                 MessageBox.Show("Introduceți numărul de persoane.");
                 return;
             }
+
             if (maxTime < 0 && !int.TryParse(MaxTime, out maxTime))
             {
                 MessageBox.Show("Introduceți timpul maxim.");
                 return;
             }
-            if (secondsPerTimeUnit <= 0 &&
-                !int.TryParse(SecondsPerTimeUnit, out secondsPerTimeUnit))
+
+            if (secondsPerTimeUnit <= 0)
+            {
                 secondsPerTimeUnit = 1;
+            }
+            else if (secondsPerTimeUnit == 1 && !string.IsNullOrWhiteSpace(SecondsPerTimeUnit))
+            {
+                if (!int.TryParse(SecondsPerTimeUnit, out secondsPerTimeUnit) || secondsPerTimeUnit <= 0)
+                    secondsPerTimeUnit = 1;
+            }
 
             int minimumTime = BinarySearch.FindMinimumTime(graph, people, maxTime);
 
@@ -167,8 +175,10 @@ namespace time_expanded_graph.ViewModels
 
             DinicEdges = dinic.GetAllEdges();
             DinicIndexToNodeMap = dinic.GetIndexToNodeMap();
+
             PushRelabelEdges = pr.GetAllEdges();
             PushRelabelIndexToNodeMap = pr.GetIndexToNodeMap();
+
             EdmondsKarpEdges = ek.GetAllEdges();
             EdmondsKarpIndexToNodeMap = ek.GetIndexToNodeMap();
 
@@ -177,7 +187,9 @@ namespace time_expanded_graph.ViewModels
             if (DinicEdges != null && DinicIndexToNodeMap != null)
             {
                 OptimalEvacuationPath = EvacuationPathExtractor.ExtractPath(
-                    DinicEdges, DinicIndexToNodeMap, graph);
+                    DinicEdges,
+                    DinicIndexToNodeMap,
+                    graph);
             }
 
             EvacuationPathReady?.Invoke();
@@ -185,8 +197,10 @@ namespace time_expanded_graph.ViewModels
             int evacuationSec = minimumTime * secondsPerTimeUnit;
 
             ResultText = $"Timp minim evacuare: {minimumTime} unități de timp";
+
             EvacuationTimeSecondsText =
                 $"Timpul minim pentru a evacua {people} persoane este de {evacuationSec} secunde.";
+
             FlowResultsText =
                 $"Dinic: {flowDinic} persoane     " +
                 $"PushRelabel: {flowPR} persoane     " +
